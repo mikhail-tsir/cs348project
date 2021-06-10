@@ -11,4 +11,5 @@ VALUES
     ('Mikhail', 'Tsirlin'),
     ('Henry', 'Chen'),
     ('Daniel', 'Pechersky'),
-    ('Dylan', 'Shortt');
+    ('Dylan', 'Shortt'),
+    ('Sky', 'Qiao');

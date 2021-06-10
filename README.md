@@ -26,4 +26,6 @@ git clone git@github.com:mikhail-tsir/cs348project.git
         docker-compose up
     ```
 
+    The docker compose file spins up the web server and the mysql database, in two separate docker containers. The mysql container automatically runs `db/init.sql` to create the table(s).
+
 3. Navigate to `http://localhost:5000`
