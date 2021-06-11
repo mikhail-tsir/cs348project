@@ -89,21 +89,25 @@
       </head>
       
       <body>
-          <form id=frm1 method="post">
+          <form id=frm1 action="company-dashboard.html" method="post">
               <div class="imgcontainer">
                   <img src="profile.png" alt="Avatar" class="avatar">
               </div>
       
               <div class="container">
+                  <label for="company">
+                    <b>Company Name</b>
+                  </label>
+                  <input class="input" type="text" placeholder="TechnoCorp" name="company"/>
                   <label for="email">
                     <b>Email Address</b>
                   </label>
-                  <input class="input" type="text" placeholder="mtsirlin@uwaterloo.ca" name="email" required />
+                  <input class="input" type="text" placeholder="mtsirlin@uwaterloo.ca" name="email"/>
                   <label for="pw">
                     <b>Password</b>
                   </label>
-                  <input type="password" placeholder="password" name="id" required />
-                  <button type="submit" onclick="authenticate()">Login</button>
+                  <input type="password" placeholder="password" name="pw"/>
+                  <button type="submit">Login As Company</button>
               </div>
           </form>
       </body>
