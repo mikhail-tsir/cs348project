@@ -54,8 +54,8 @@ CREATE TABLE job_skill_requirements (
   job_id INT NOT NULL,
   skill_id INT NOT NULL,
   PRIMARY KEY(skill_id, job_id),
-  FOREIGN KEY(skill_id) REFERENCES Skill(id),
-  FOREIGN KEY(job_id) REFERENCES Job(job_id)
+  FOREIGN KEY(skill_id) REFERENCES skill(id),
+  FOREIGN KEY(job_id) REFERENCES job(id)
 );
 
 -- constraints to ensure that no account belongs to
