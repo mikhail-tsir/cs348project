@@ -42,12 +42,6 @@ CREATE TABLE application (
   FOREIGN KEY job_id REFERENCES job(job_id)
 );
 
-CREATE TABLE application_skill (
-  application_id INT NOT NULL,
-  skill_id INT NOT NULL,
-  FOREIGN KEY application_id REFERENCES application(id)
-);
-
 CREATE TABLE job_seeker_skill (
   skill_id INT NOT NULL,
   job_seeker_id INT NOT NULL,
