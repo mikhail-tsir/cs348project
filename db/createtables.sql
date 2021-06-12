@@ -1,40 +1,40 @@
 CREATE TABLE Account
   ( 
-     id     DECIMAL(9, 0) NOT NULL PRIMARY KEY, 
-     email    VARCHAR(30) NOT NULL, 
-     account_password	VARCHAR(25) NOT NULL
+	id     			DECIMAL(9, 0) NOT NULL PRIMARY KEY, 
+     	email    		VARCHAR(30) NOT NULL, 
+     	account_password	VARCHAR(25) NOT NULL
   ); 
 
 CREATE TABLE Company 
   (  
-	 id DECIMAL(9, 0) NOT NULL,
-	 PRIMARY KEY(id), 
-	 FOREIGN KEY(id) REFERENCES Account(id),
-     company_name   VARCHAR(30) NOT NULL
+	id 		DECIMAL(9, 0) NOT NULL,
+	PRIMARY KEY(id), 
+	FOREIGN KEY(id) REFERENCES Account(id),
+     	company_name   	VARCHAR(30) NOT NULL
   ); 
 
 CREATE TABLE Job_seeker 
   (  
-	 id DECIMAL(9, 0) NOT NULL,
-	 PRIMARY KEY(id), 
-	 FOREIGN KEY(id) REFERENCES Account(id),
-     name   VARCHAR(30) NOT NULL
+	id 		DECIMAL(9, 0) NOT NULL,
+	PRIMARY KEY(id), 
+	FOREIGN KEY(id) REFERENCES Account(id),
+     	name   		VARCHAR(30) NOT NULL
   ); 
   
 CREATE TABLE Job 
   ( 	
-	 job_id     VARCHAR(40) NOT NULL PRIMARY KEY, 
-     jname		VARCHAR(20) NOT NULL, 
-     company_id DECIMAL(9, 0) NOT NULL,
-     description     VARCHAR(10), 
-     apply_deadline      VARCHAR(20), 
-     FOREIGN KEY(company_id) REFERENCES Company(company_id) 
+	job_id     	VARCHAR(40) NOT NULL PRIMARY KEY, 
+	jname		VARCHAR(20) NOT NULL, 
+	company_id 	DECIMAL(9, 0) NOT NULL,
+	description     VARCHAR(10), 
+	apply_deadline  VARCHAR(20), 
+	FOREIGN KEY(company_id) REFERENCES Company(company_id) 
   ); 
 
 CREATE TABLE Skill 
   ( 	
-	 skill_id     VARCHAR(40) NOT NULL PRIMARY KEY, 
-     sname		VARCHAR(20) NOT NULL
+	skill_id     	VARCHAR(40) NOT NULL PRIMARY KEY, 
+	sname		VARCHAR(20) NOT NULL
   ); 
 
 CREATE TABLE Application 
