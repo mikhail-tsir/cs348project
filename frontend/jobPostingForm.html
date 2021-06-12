@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Job Posting Form</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <style>
-      html, body {
+
+<head>
+  <title>Job Posting Form</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <style>
+    html,
+    body {
       min-height: 100%;
-      }
-      body, div, form, input, textarea, select, p { 
+    }
+
+    body,
+    div,
+    form,
+    input,
+    textarea,
+    select,
+    p {
       padding: 0;
       margin: 0;
       outline: none;
@@ -16,22 +26,26 @@
       font-size: 18px;
       color: rgb(0, 0, 0);
       line-height: 22px;
-      }
-      h1 {
+    }
+
+    h1 {
       position: absolute;
       margin: auto;
       font-size: 38px;
       color: #fff;
       z-index: 2;
-      }
-      p.top-info {
+    }
+
+    p.top-info {
       font-size: 24px;
       margin: 20px 0;
-      }
-      p.top-desc {
+    }
+
+    p.top-desc {
       margin: 20px 0;
-      }
-      .testbox {
+    }
+
+    .testbox {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -40,126 +54,149 @@
       margin-left: auto;
       margin-right: auto;
       padding: 50px;
-      }
-      form {
+    }
+
+    form {
       width: 100%;
       padding: 20px;
       border-radius: 6px;
       background: #fff;
-      box-shadow: 0 0 25px 0 #1c87c9; 
-      }
-     .banner {
+      box-shadow: 0 0 25px 0 #1c87c9;
+    }
+
+    .banner {
       position: relative;
-      height: 200px;  
+      height: 200px;
       background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      }
-      .banner::after {
+    }
+
+    .banner::after {
       content: "";
-      background-color: rgba(38, 36, 201, 0.945); 
+      background-color: rgba(38, 36, 201, 0.945);
       position: absolute;
       width: 100%;
       height: 100%;
-      }
-      input, textarea, select, textarea {
+    }
+
+    input,
+    textarea,
+    select,
+    textarea {
       margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 3px;
-      }
-      input, textarea {
+    }
+
+    input,
+    textarea {
       width: calc(100% - 10px);
       padding: 5px;
-      }
-      .item input:hover, .item select:hover {
+    }
+
+    .item input:hover,
+    .item select:hover {
       border: 1px solid transparent;
       box-shadow: 0 0 6px 0 #1c87c9;
-      }
-      .item {
+    }
+
+    .item {
       position: relative;
       margin: 10px 0;
-      }
-      span.required {
+    }
+
+    span.required {
       margin-left: 0;
       color: red;
-      }
-      .btn-block {
+    }
+
+    .btn-block {
       margin-top: 10px;
       text-align: center;
-      }
-      button {
+    }
+
+    button {
       width: auto;
       padding: 10px;
       border: none;
-      border-radius: 5px; 
+      border-radius: 5px;
       background: #1c87c9;
       font-size: 16px;
       font-weight: 700;
       color: #fff;
       cursor: pointer;
-      }
-      button:hover {
+    }
+
+    button:hover {
       background: #1e6fa0;
+    }
+
+    @media (min-width: 568px) {
+
+      .name-item,
+      .contact-item {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
       }
-      @media (min-width: 568px) {
-      .name-item, .contact-item {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      }
+
       .contact-item .item {
-      width: calc(50% - 8px);
+        width: calc(50% - 8px);
       }
+
       .contact-item input {
-      width: calc(100% - 12px);
+        width: calc(100% - 12px);
       }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="testbox">
-      <form action="/">
-        <div class="banner">
-          <h1>Job Posting Form</h1>
+    }
+  </style>
+</head>
+
+<body>
+  <div class="testbox">
+    <form action="/">
+      <div class="banner">
+        <h1>Job Posting Form</h1>
+      </div>
+      <p class="top-desc">Fill out the information below to post a new job for your company.</p>
+      <div class="item">
+        <p>Company Name<span class="required">*</span></p>
+        <div class="name-item">
+          <input type="text" name="Company Name" required />
         </div>
-        <p class="top-desc">Fill out the information below to post a new job for your company.</p>
-        <div class="item">
-          <p>Company Name<span class="required">*</span></p>
-          <div class="name-item">
-            <input type="text" name="Company Name" required/>
-          </div>
-          <p>Job Title<span class="required">*</span></p>
-          <div class="name-item">
-            <input type="text" name="Company Name" required/>
-          </div>
-          <p>Description<span class="required">*</span></p>
-          <textarea id="desc" rows="5" cols="105" required>
+        <p>Job Title<span class="required">*</span></p>
+        <div class="name-item">
+          <input type="text" name="Company Name" required />
+        </div>
+        <p>Description<span class="required">*</span></p>
+        <textarea id="desc" rows="5" cols="105" required>
           </textarea>
-          <p>Required Skills<span class="required">*</span></p>
-          <div class="name-item">
-            <input type="text" name="Company Name" required/>
-          </div>
-          <div class="item">
-            <p>Application Deadline<span class="required">*</span></p>
-            <input type="date" name="bdate" required/>
-          </div>
+        <p>Required Skills<span class="required">*</span></p>
+        <div class="name-item">
+          <input type="text" name="Company Name" required />
         </div>
-        <div class="contact-item">
-          <div class="item">
-            <p>Email<span class="required">*</span></p>
-            <input type="text" name="name" required/>
-          </div>
-          <div class="item">
-            <p>Phone</p>
-            <input type="text" name="name"/>
-          </div>
+        <div class="item">
+          <p>Application Deadline<span class="required">*</span></p>
+          <input type="date" name="bdate" required />
         </div>
-        <div class="btn-block">
-          <button type="submit" href="/">Apply For The Job</button>
+      </div>
+      <div class="contact-item">
+        <div class="item">
+          <p>Email<span class="required">*</span></p>
+          <input type="text" name="name" required />
         </div>
-      </form>
-    </div>
-  </body>
+        <div class="item">
+          <p>Phone</p>
+          <input type="text" name="name" />
+        </div>
+      </div>
+      <div class="btn-block">
+        <button type="submit" href="/">Apply For The Job</button>
+      </div>
+    </form>
+  </div>
+</body>
+
 </html>
