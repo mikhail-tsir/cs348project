@@ -20,7 +20,7 @@ CREATE TABLE job_seeker (
 );
 
 CREATE TABLE job (
-  id TEXT NOT NULL PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   company_id INT NOT NULL,
   description TEXT NOT NULL,
@@ -36,10 +36,10 @@ CREATE TABLE skill (
 CREATE TABLE application (
   job_seeker_id INT NOT NULL,
   job_id INT NOT NULL,
-  PRIMARY KEY(skill_id, job_id),
   APPLIED_AT TIMESTAMP NOT NULL CURRENT_TIMESTAMP,
+  PRIMARY KEY(skill_id, job_id),
   FOREIGN KEY job_seeker_id REFERENCES job_seeker(id),
-  FOREIGN KEY job_id REFERENCES job(job_id)
+  FOREIGN KEY job_id REFERENCES job(id)
 );
 
 CREATE TABLE job_seeker_skill (
@@ -60,13 +60,14 @@ CREATE TABLE job_skill_requirements (
 
 -- constraints to ensure that no account belongs to
 -- a company AND a job seeker
-
 ALTER TABLE company
 ADD CONSTRAINT company_account_id_check
 CHECK (
   account_id NOT IN (
-    SELECT account_id
-    FROM job_seeker
+    SELECT
+      account_id
+    FROM
+      job_seeker
   )
 );
 
@@ -74,7 +75,9 @@ ALTER TABLE job_seeker
 ADD CONSTRAINT job_seeker_account_id_check
 CHECK (
   account_id NOT IN (
-    SELECT account_id
-    FROM company
+    SELECT
+      account_id
+    FROM
+      company
   )
 );
