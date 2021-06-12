@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Posting Details</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <style>
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body,
+        div,
+        form,
+        select,
+        p {
+            padding: 0;
+            margin: 0;
+            outline: none;
+            font-family: Roboto, Arial, sans-serif;
+            font-size: 16px;
+            color: rgb(0, 0, 0);
+            line-height: 22px;
+        }
+
+        h1 {
+            position: absolute;
+            margin: auto;
+            font-size: 38px;
+            color: #fff;
+            z-index: 2;
+        }
+
+        p.top-info {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        p.info {
+            margin: 20px 0;
+        }
+
+        .testbox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: inherit;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 50px;
+        }
+
+        form {
+            width: 100%;
+            padding: 20px;
+            border-radius: 6px;
+            background: #fff;
+            box-shadow: 0 0 25px 0 #1c87c9;
+        }
+
+        .banner {
+            position: relative;
+            height: 120px;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .banner::after {
+            content: "";
+            background-color: rgba(38, 36, 201, 0.945);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .btn-block {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        button {
+            width: auto;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #1c87c9;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e6fa0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="testbox">
+        <form action="/">
+            <div class="banner">
+                <h1>Position Details</h1>
+            </div>
+            <p class="info">Company: </p>
+            <p class="info">Position: </p>
+            <p class="info">Description: </p>
+            <p class="info">Required Skills: </p>
+            <p class="info">Application Deadline: </p>
+            <div class="btn-block">
+                <button type="submit" href="/">Apply For The Job</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
