@@ -1,69 +1,65 @@
+CREATE TABLE account (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email TEXT NOT NULL,
+  password TEXT NOT NULL
+);
 
+CREATE TABLE company (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  company_name TEXT NOT NULL,
+  account_id INT NOT NULL,
+  FOREIGN KEY account_id REFERENCES account(id)
+);
 
-CREATE TABLE Account
-  ( 
-	id     			DECIMAL(9, 0) NOT NULL PRIMARY KEY, 
-	email    		VARCHAR(30) NOT NULL, 
-	account_password	VARCHAR(25) NOT NULL
-  ); 
+CREATE TABLE job_seeker (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NOT NULL,
+  account_id INT NOT NULL,
+  cv BLOB,
+  FOREIGN KEY account_id REFERENCES(account_id)
+);
 
-CREATE TABLE Company 
-  (  
-	id 		DECIMAL(9, 0) NOT NULL,
-	PRIMARY KEY(id), 
-	FOREIGN KEY(id) REFERENCES Account(id),
-	company_name   	VARCHAR(30) NOT NULL
-  ); 
+CREATE TABLE job (
+  id TEXT NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  company_id INT NOT NULL,
+  description TEXT NOT NULL,
+  apply_deadline TIMESTAMP NOT NULL,
+  FOREIGN KEY company_id REFERENCES company(id)
+);
 
-CREATE TABLE Job_seeker 
-  (  
-	id 		DECIMAL(9, 0) NOT NULL,
-	PRIMARY KEY(id), 
-	FOREIGN KEY(id) REFERENCES Account(id),
-	name   		VARCHAR(30) NOT NULL
-  ); 
+CREATE TABLE skill (
+  skill_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NOT NULL
+);
 
-  
-CREATE TABLE Job 
-  ( 	
-	job_id     DECIMAL(9, 0) NOT NULL PRIMARY KEY, 
-	jname		VARCHAR(20) NOT NULL, 
-	company_id 	DECIMAL(9, 0) NOT NULL,
-	description     VARCHAR(10), 
-	apply_deadline  VARCHAR(20), 
-	FOREIGN KEY(company_id) REFERENCES Company(id) 
-  ); 
+CREATE TABLE application (
+  job_seeker_id INT NOT NULL,
+  job_id INT NOT NULL,
+  PRIMARY KEY(skill_id, job_id),
+  APPLIED_AT TIMESTAMP NOT NULL CURRENT_TIMESTAMP,
+  FOREIGN KEY job_seeker_id REFERENCES job_seeker(id),
+  FOREIGN KEY job_id REFERENCES job(job_id)
+);
 
-CREATE TABLE Skill 
-  ( 	
-	skill_id     	DECIMAL(9, 0) NOT NULL PRIMARY KEY, 
-	sname		VARCHAR(20) NOT NULL
-  ); 
+CREATE TABLE application_skill (
+  application_id INT NOT NULL,
+  skill_id INT NOT NULL,
+  FOREIGN KEY application_id REFERENCES application(id)
+);
 
-CREATE TABLE Application 
-  ( 
-     skill_id  DECIMAL(9, 0) NOT NULL, 
-     job_id DECIMAL(9, 0) NOT NULL, 
-     PRIMARY KEY(skill_id, job_id), 
-     FOREIGN KEY(skill_id) REFERENCES Job_seeker(id), 
-     FOREIGN KEY(job_id) REFERENCES Job(job_id) 
-  ); 
+CREATE TABLE job_seeker_skill (
+  skill_id INT NOT NULL,
+  job_seeker_id INT NOT NULL,
+  PRIMARY KEY(skill_id, job_seeker_id),
+  FOREIGN KEY(job_seeker_id) REFERENCES job_seeker(id),
+  FOREIGN KEY(skill_id) REFERENCES skill(id)
+);
 
-
-CREATE TABLE Job_seeker_skill 
-  ( 
-     skill_id  DECIMAL(9, 0) NOT NULL, 
-     job_seeker_id  DECIMAL(9, 0) NOT NULL, 
-     PRIMARY KEY(skill_id, job_seeker_id), 
-     FOREIGN KEY(job_seeker_id) REFERENCES Job_seeker(id), 
-     FOREIGN KEY(skill_id) REFERENCES Skill(skill_id) 
-  ); 
-  
-  CREATE TABLE Job_skill_requirements
-  ( 
-     skill_id  DECIMAL(9, 0) NOT NULL, 
-     job_id  DECIMAL(9, 0) NOT NULL, 
-     PRIMARY KEY(skill_id, job_id), 
-     FOREIGN KEY(skill_id) REFERENCES Skill(skill_id), 
-     FOREIGN KEY(job_id) REFERENCES Job(job_id)
-  ); 
+CREATE TABLE job_skill_requirements (
+  job_id INT NOT NULL,
+  skill_id INT NOT NULL,
+  PRIMARY KEY(skill_id, job_id),
+  FOREIGN KEY(skill_id) REFERENCES Skill(id),
+  FOREIGN KEY(job_id) REFERENCES Job(job_id)
+);
