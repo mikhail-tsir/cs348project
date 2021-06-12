@@ -63,3 +63,24 @@ CREATE TABLE job_skill_requirements (
   FOREIGN KEY(skill_id) REFERENCES Skill(id),
   FOREIGN KEY(job_id) REFERENCES Job(job_id)
 );
+
+-- constraints to ensure that no account belongs to
+-- a company AND a job seeker
+
+ALTER TABLE company
+ADD CONSTRAINT company_account_id_check
+CHECK (
+  account_id NOT IN (
+    SELECT account_id
+    FROM job_seeker
+  )
+);
+
+ALTER TABLE job_seeker
+ADD CONSTRAINT job_seeker_account_id_check
+CHECK (
+  account_id NOT IN (
+    SELECT account_id
+    FROM company
+  )
+);
