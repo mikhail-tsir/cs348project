@@ -14,10 +14,9 @@ CREATE TABLE company (
 
 CREATE TABLE job_seeker (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
+  fname TEXT NOT NULL,
+  lname TEXT NOT NULL,
   account_id INT NOT NULL,
-  phone INT,
   cv BLOB,
   FOREIGN KEY account_id REFERENCES account(id)
 );
