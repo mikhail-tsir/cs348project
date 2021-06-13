@@ -14,17 +14,17 @@ CREATE TABLE company (
 
 CREATE TABLE job_seeker (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  fname TEXT NOT NULL,
-  lname TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   account_id INT NOT NULL,
+  phone INT,
   cv BLOB,
-  phone TEXT,
-  FOREIGN KEY account_id REFERENCES(account_id)
+  FOREIGN KEY account_id REFERENCES account(id)
 );
 
 CREATE TABLE job (
   id INT NOT NULL PRIMARY KEY,
-  name TEXT NOT NULL,
+  jname TEXT NOT NULL,
   company_id INT NOT NULL,
   description TEXT NOT NULL,
   apply_deadline TIMESTAMP NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE job (
 
 CREATE TABLE skill (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name TEXT NOT NULL,
+  sname TEXT NOT NULL,
   proficiency INT NOT NULL,
   CONSTRAINT proficiency_check CHECK (
     proficiency > 0
