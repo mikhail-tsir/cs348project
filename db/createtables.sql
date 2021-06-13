@@ -7,6 +7,7 @@ CREATE TABLE account (
 CREATE TABLE company (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   company_name TEXT NOT NULL,
+  description TEXT,
   account_id INT NOT NULL,
   FOREIGN KEY account_id REFERENCES account(id)
 );
@@ -29,8 +30,12 @@ CREATE TABLE job (
 );
 
 CREATE TABLE skill (
-  skill_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name TEXT NOT NULL
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name TEXT NOT NULL,
+  proficiency INT NOT NULL,
+  CONSTRAINT proficiency_check CHECK (
+    proficiency > 0 AND proficiency <= 3
+  )
 );
 
 CREATE TABLE application (
@@ -53,9 +58,13 @@ CREATE TABLE job_seeker_skill (
 CREATE TABLE job_skill_requirements (
   job_id INT NOT NULL,
   skill_id INT NOT NULL,
+  min_proficiency INT NOT NULL,
   PRIMARY KEY(skill_id, job_id),
   FOREIGN KEY(skill_id) REFERENCES skill(id),
-  FOREIGN KEY(job_id) REFERENCES job(id)
+  FOREIGN KEY(job_id) REFERENCES job(id),
+  CONSTRAINT min_proficiency_constraint CHECK (
+    min_proficiency > 0 AND min_proficiency <= 3
+  )
 );
 
 -- constraints to ensure that no account belongs to
