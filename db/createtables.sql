@@ -9,7 +9,7 @@ CREATE TABLE company (
   company_name TEXT NOT NULL,
   description TEXT,
   account_id INT NOT NULL,
-  FOREIGN KEY account_id REFERENCES account(id)
+  FOREIGN KEY (account_id) REFERENCES account(id)
 );
 
 CREATE TABLE job_seeker (
@@ -19,7 +19,7 @@ CREATE TABLE job_seeker (
   account_id INT NOT NULL,
   cv BLOB,
   phone TEXT,
-  FOREIGN KEY account_id REFERENCES account(id)
+  FOREIGN KEY (account_id) REFERENCES account(id)
 );
 
 CREATE TABLE job (
@@ -28,7 +28,7 @@ CREATE TABLE job (
   company_id INT NOT NULL,
   description TEXT NOT NULL,
   apply_deadline TIMESTAMP NOT NULL,
-  FOREIGN KEY company_id REFERENCES company(id)
+  FOREIGN KEY (company_id) REFERENCES company(id)
 );
 
 CREATE TABLE skill (
@@ -44,18 +44,18 @@ CREATE TABLE skill (
 CREATE TABLE application (
   job_seeker_id INT NOT NULL,
   job_id INT NOT NULL,
-  APPLIED_AT TIMESTAMP NOT NULL CURRENT_TIMESTAMP,
-  PRIMARY KEY(skill_id, job_id),
-  FOREIGN KEY job_seeker_id REFERENCES job_seeker(id),
-  FOREIGN KEY job_id REFERENCES job(id)
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(job_seeker_id, job_id),
+  FOREIGN KEY (job_seeker_id) REFERENCES job_seeker(id),
+  FOREIGN KEY (job_id) REFERENCES job(id)
 );
 
 CREATE TABLE job_seeker_skill (
   skill_id INT NOT NULL,
   job_seeker_id INT NOT NULL,
   PRIMARY KEY(skill_id, job_seeker_id),
-  FOREIGN KEY(job_seeker_id) REFERENCES job_seeker(id),
-  FOREIGN KEY(skill_id) REFERENCES skill(id)
+  FOREIGN KEY (job_seeker_id) REFERENCES job_seeker(id),
+  FOREIGN KEY (skill_id) REFERENCES skill(id)
 );
 
 CREATE TABLE job_skill_requirements (
@@ -63,8 +63,8 @@ CREATE TABLE job_skill_requirements (
   skill_id INT NOT NULL,
   min_proficiency INT NOT NULL,
   PRIMARY KEY(skill_id, job_id),
-  FOREIGN KEY(skill_id) REFERENCES skill(id),
-  FOREIGN KEY(job_id) REFERENCES job(id),
+  FOREIGN KEY (skill_id) REFERENCES skill(id),
+  FOREIGN KEY (job_id) REFERENCES job(id),
   CONSTRAINT min_proficiency_constraint CHECK (
     min_proficiency > 0
     AND min_proficiency <= 3
