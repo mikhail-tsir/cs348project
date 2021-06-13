@@ -34,7 +34,8 @@ CREATE TABLE skill (
   name TEXT NOT NULL,
   proficiency INT NOT NULL,
   CONSTRAINT proficiency_check CHECK (
-    proficiency > 0 AND proficiency <= 3
+    proficiency > 0
+    AND proficiency <= 3
   )
 );
 
@@ -63,30 +64,33 @@ CREATE TABLE job_skill_requirements (
   FOREIGN KEY(skill_id) REFERENCES skill(id),
   FOREIGN KEY(job_id) REFERENCES job(id),
   CONSTRAINT min_proficiency_constraint CHECK (
-    min_proficiency > 0 AND min_proficiency <= 3
+    min_proficiency > 0
+    AND min_proficiency <= 3
   )
 );
 
 -- constraints to ensure that no account belongs to
 -- a company AND a job seeker
-ALTER TABLE company
-ADD CONSTRAINT company_account_id_check
-CHECK (
-  account_id NOT IN (
-    SELECT
-      account_id
-    FROM
-      job_seeker
-  )
-);
+ALTER TABLE
+  company
+ADD
+  CONSTRAINT company_account_id_check CHECK (
+    account_id NOT IN (
+      SELECT
+        account_id
+      FROM
+        job_seeker
+    )
+  );
 
-ALTER TABLE job_seeker
-ADD CONSTRAINT job_seeker_account_id_check
-CHECK (
-  account_id NOT IN (
-    SELECT
-      account_id
-    FROM
-      company
-  )
-);
+ALTER TABLE
+  job_seeker
+ADD
+  CONSTRAINT job_seeker_account_id_check CHECK (
+    account_id NOT IN (
+      SELECT
+        account_id
+      FROM
+        company
+    )
+  );
