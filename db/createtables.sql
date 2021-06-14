@@ -1,30 +1,32 @@
 CREATE TABLE account (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  email TEXT NOT NULL,
-  password TEXT NOT NULL
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  CONSTRAINT email_unique UNIQUE (email)
 );
 
 CREATE TABLE company (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  company_name TEXT NOT NULL,
+  name VARCHAR(255) NOT NULL,
   description TEXT,
   account_id INT NOT NULL,
-  FOREIGN KEY (account_id) REFERENCES account(id)
+  FOREIGN KEY (account_id) REFERENCES account(id),
+  CONSTRAINT name_unique UNIQUE (name)
 );
 
 CREATE TABLE job_seeker (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  fname TEXT NOT NULL,
-  lname TEXT NOT NULL,
+  fname VARCHAR(255) NOT NULL,
+  lname VARCHAR(255) NOT NULL,
   account_id INT NOT NULL,
   cv BLOB,
-  phone TEXT,
+  phone VARCHAR(255),
   FOREIGN KEY (account_id) REFERENCES account(id)
 );
 
 CREATE TABLE job (
   id INT NOT NULL PRIMARY KEY,
-  jname TEXT NOT NULL,
+  jname VARCHAR(255) NOT NULL,
   company_id INT NOT NULL,
   description TEXT NOT NULL,
   apply_deadline TIMESTAMP NOT NULL,
@@ -33,7 +35,7 @@ CREATE TABLE job (
 
 CREATE TABLE skill (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  sname TEXT NOT NULL
+  sname VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE application (
@@ -151,11 +153,49 @@ END
 
 DELIMITER ;
 
+-- views
+
+-- relevance view
+
 CREATE VIEW relevance AS
   SELECT
     SUM(seeker.proficiency * reqs.min_proficiency) AS score,
     reqs.job_id,
     seeker.job_seeker_id
-  FROM job_skill_requirements AS reqs, job_seeker_skill AS seeker
-  WHERE reqs.skill_id = seeker.skill_id
-  GROUP BY reqs.job_id,  seeker.job_seeker_id;
+  FROM job_skill_requirements AS reqs
+  INNER JOIN job_seeker_skill AS seeker
+  ON reqs.skill_id = seeker.skill_id
+  GROUP BY reqs.job_id, seeker.job_seeker_id;
+
+-- companies view
+
+CREATE VIEW company_account AS
+  SELECT
+    company.id,
+    account.id AS account_id,
+    account.email AS email,
+    account.password AS password,
+    company.name AS name
+  FROM company
+  INNER JOIN account
+  ON company.account_id = account.id;
+
+-- jobseekers view
+
+CREATE VIEW job_seeker_account AS
+  SELECT
+    job_seeker.id,
+    account.id AS account_id,
+    account.email AS email,
+    account.password AS password,
+    job_seeker.fname AS fname,
+    job_seeker.lname AS lname
+  FROM job_seeker
+  INNER JOIN account
+  ON job_seeker.account_id = account.id;
+
+-- indexes
+
+CREATE INDEX email_idx ON account (email);
+
+CREATE INDEX email_password_idx ON account (email, password);

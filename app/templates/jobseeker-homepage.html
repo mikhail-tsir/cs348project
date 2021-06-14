@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Job Application Form</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+  <style>
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    html {
+      background-image: url("{{url_for('static', filename='background.jpg')}}");
+    }
+
+    body,
+    div,
+    form,
+    input,
+    select,
+    p {
+      padding: 0;
+      margin: 0;
+      outline: none;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 18px;
+      color: rgb(0, 0, 0);
+      line-height: 22px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="section is-primary is-fullheight is-8">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <nav class="navbar is-8" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <div class="navbar-item">
+              <h1>Welcome, <b>{{ fname }}!</b></h1>
+            </div>
+          </div>
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item">
+                View Postings
+              </a>
+
+              <a class="navbar-item">
+                My applications
+              </a>
+
+              <a class="navbar-item">
+                My skills
+              </a>
+            </div>
+            <div class="navbar-end">
+              <a class="navber-item" href="/logout">Log Out</a>
+            </div>
+          </div>
+        </nav>
+        <br>
+        <div class="columns">
+          <div class="column is-3">
+            <div class="card has-background-info-light">
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-48x48">
+                      <img src="{{url_for('static', filename='profile.png')}}" alt="Profile">
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-4">{{ fname }} {{ lname }}</p>
+                  </div>
+                </div>
+                <h1>Skills:</h1>
+                <span class="tag is-link is-large">Relational Databases</span>
+                <span class="tag is-link is-large">Functional Programming</span>
+                <span class="tag is-link is-normal">Object-Oriented Programming</span>
+                <span class="tag is-link is-normal">Cloud Computing</span>
+                <snap class="tag is-link is-normal">NoSQL Databases</snap>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card is-fullwidth">
+              <div class="card-header">
+                <p class="card-header-title">
+                  <a href="#">Software Engineer</a>
+                </p>
+              </div>
+              <div class="card-content">
+                <p>
+                  TechnoCorp<br>
+                  Ottawa, ON
+                </p>
+              </div>
+              <div class="card-footer">
+                <div class="card-footer-item has-text-left">
+                  <span class="tag is-large">Relational Databases</span>
+                  <span class="tag is-normal">Object-Oriented Programming</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
