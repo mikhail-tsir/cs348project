@@ -71,28 +71,107 @@ CREATE TABLE job_skill_requirements (
   )
 );
 
--- constraints to ensure that no account belongs to
--- a company AND a job seeker
-ALTER TABLE
-  company
-ADD
-  CONSTRAINT company_account_id_check CHECK (
-    account_id NOT IN (
-      SELECT
-        account_id
-      FROM
-        job_seeker
-    )
-  );
+-- -- constraints to ensure that no account belongs to
+-- -- a company AND a job seeker
+-- ALTER TABLE
+--   company
+-- ADD
+--   CONSTRAINT company_account_id_check CHECK (
+--     account_id NOT IN (
+--       SELECT
+--         account_id
+--       FROM
+--         job_seeker
+--     )
+--   );
 
-ALTER TABLE
-  job_seeker
-ADD
-  CONSTRAINT job_seeker_account_id_check CHECK (
-    account_id NOT IN (
-      SELECT
-        account_id
-      FROM
-        company
-    )
-  );
+-- ALTER TABLE
+--   job_seeker
+-- ADD
+--   CONSTRAINT job_seeker_account_id_check CHECK (
+--     account_id NOT IN (
+--       SELECT
+--         account_id
+--       FROM
+--         company
+--     )
+--   );
+
+-- procedure to be called by trigger to check for company account_id integrity
+DELIMITER //
+CREATE PROCEDURE company_account_id_check_proc(IN acct_id INT)
+READS SQL DATA
+BEGIN
+
+  IF acct_id IN
+    (SELECT account_id
+    FROM job_seeker)
+  THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Company account already belongs to job seeker';
+  END IF;
+
+END
+//
+
+-- triggers to check for job_seeker account_id integrity
+
+-- before insert
+CREATE TRIGGER company_account_id_check_insert
+BEFORE INSERT
+ON company FOR EACH ROW
+
+BEGIN
+  CALL company_account_id_check_proc(NEW.id);
+END
+//
+
+-- before update
+CREATE TRIGGER company_account_id_check_update
+BEFORE UPDATE
+ON company FOR EACH ROW
+
+BEGIN
+  CALL company_account_id_check_proc(NEW.id);
+END
+//
+
+-- procedure to be called by trigger to check for job_seeker account_id integrity
+CREATE PROCEDURE job_seeker_account_id_check_proc(IN acct_id INT)
+READS SQL DATA
+BEGIN
+
+  IF acct_id IN
+    (SELECT account_id
+    FROM company)
+  THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Job seeker account already belongs to company';
+  END IF;
+
+END
+//
+
+-- triggers to check for job_seeker account_id integrity
+
+-- before insert
+CREATE TRIGGER job_seeker_account_id_check_insert
+BEFORE INSERT
+ON job_seeker FOR EACH ROW
+
+BEGIN
+  CALL job_seeker_account_id_check_proc(NEW.account_id);
+END
+//
+
+-- before update
+CREATE TRIGGER job_seeker_account_id_check_update
+BEFORE UPDATE
+ON job_seeker FOR EACH ROW
+
+BEGIN
+  CALL job_seeker_account_id_check_proc(NEW.account_id);
+END
+//
+
+DELIMITER ;
