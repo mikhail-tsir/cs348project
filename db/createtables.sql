@@ -1,6 +1,6 @@
 CREATE TABLE account (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  email TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL
 );
 
