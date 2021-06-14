@@ -1,20 +1,6 @@
-from flask.json import jsonify
-from app.setup import app
-from app.db_util import db
-from flask import jsonify
+from . import create_app
 
-
-@app.route("/")
-def get_query_result():
-    with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM users")
-        result = cursor.fetchall()
-
-        response = jsonify(result)
-        response.status_code = 200
-
-        return response
-
+app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(host="0.0.0.0", port=5000, debug=True)
