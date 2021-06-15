@@ -3,6 +3,7 @@ SELECT job.*
 FROM relevance, job
 WHERE relevance.job_id = job.id
   AND relevance.job_seeker_id = %s
+  AND job.apply_deadline <= CURRENT_TIMESTAMP
 ORDER BY relevance.score DESC;
 
 -- display applicants to the hiring manager for a given job based on relevance
