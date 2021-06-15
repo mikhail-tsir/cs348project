@@ -6,22 +6,20 @@ CREATE TABLE account (
 );
 
 CREATE TABLE company (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  account_id INT NOT NULL,
-  FOREIGN KEY (account_id) REFERENCES account(id),
+  FOREIGN KEY (id) REFERENCES account(id),
   CONSTRAINT name_unique UNIQUE (name)
 );
 
 CREATE TABLE job_seeker (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL PRIMARY KEY,
   fname VARCHAR(255) NOT NULL,
   lname VARCHAR(255) NOT NULL,
-  account_id INT NOT NULL,
   cv BLOB,
   phone VARCHAR(255),
-  FOREIGN KEY (account_id) REFERENCES account(id)
+  FOREIGN KEY (id) REFERENCES account(id)
 );
 
 CREATE TABLE job (
@@ -35,7 +33,8 @@ CREATE TABLE job (
 
 CREATE TABLE skill (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  sname VARCHAR(255) NOT NULL
+  sname VARCHAR(255) NOT NULL,
+  CONSTRAINT name_unique UNIQUE (sname)
 );
 
 CREATE TABLE application (
@@ -74,14 +73,14 @@ CREATE TABLE job_skill_requirements (
 );
 
 
--- procedure to be called by trigger to check for company account_id integrity
+-- procedure to be called by trigger to check for company id integrity
 DELIMITER //
-CREATE PROCEDURE company_account_id_check_proc(IN acct_id INT)
+CREATE PROCEDURE company_id_check_proc(IN id INT)
 READS SQL DATA
 BEGIN
 
-  IF acct_id IN
-    (SELECT account_id
+  IF id IN
+    (SELECT job_seeker.id
     FROM job_seeker)
   THEN
     SIGNAL SQLSTATE '45000'
@@ -91,35 +90,35 @@ BEGIN
 END
 //
 
--- triggers to check for job_seeker account_id integrity
+-- triggers to check for job_seeker id integrity
 
 -- before insert
-CREATE TRIGGER company_account_id_check_insert
+CREATE TRIGGER company_id_check_insert
 BEFORE INSERT
 ON company FOR EACH ROW
 
 BEGIN
-  CALL company_account_id_check_proc(NEW.id);
+  CALL company_id_check_proc(NEW.id);
 END
 //
 
 -- before update
-CREATE TRIGGER company_account_id_check_update
+CREATE TRIGGER company_id_check_update
 BEFORE UPDATE
 ON company FOR EACH ROW
 
 BEGIN
-  CALL company_account_id_check_proc(NEW.id);
+  CALL company_id_check_proc(NEW.id);
 END
 //
 
--- procedure to be called by trigger to check for job_seeker account_id integrity
-CREATE PROCEDURE job_seeker_account_id_check_proc(IN acct_id INT)
+-- procedure to be called by trigger to check for job_seeker id integrity
+CREATE PROCEDURE job_seeker_id_check_proc(IN id INT)
 READS SQL DATA
 BEGIN
 
-  IF acct_id IN
-    (SELECT account_id
+  IF id IN
+    (SELECT company.id
     FROM company)
   THEN
     SIGNAL SQLSTATE '45000'
@@ -129,25 +128,25 @@ BEGIN
 END
 //
 
--- triggers to check for job_seeker account_id integrity
+-- triggers to check for job_seeker id integrity
 
 -- before insert
-CREATE TRIGGER job_seeker_account_id_check_insert
+CREATE TRIGGER job_seeker_id_check_insert
 BEFORE INSERT
 ON job_seeker FOR EACH ROW
 
 BEGIN
-  CALL job_seeker_account_id_check_proc(NEW.account_id);
+  CALL job_seeker_id_check_proc(NEW.id);
 END
 //
 
 -- before update
-CREATE TRIGGER job_seeker_account_id_check_update
+CREATE TRIGGER job_seeker_id_check_update
 BEFORE UPDATE
 ON job_seeker FOR EACH ROW
 
 BEGIN
-  CALL job_seeker_account_id_check_proc(NEW.account_id);
+  CALL job_seeker_id_check_proc(NEW.id);
 END
 //
 
@@ -170,29 +169,16 @@ CREATE VIEW relevance AS
 -- companies view
 
 CREATE VIEW company_account AS
-  SELECT
-    company.id,
-    account.id AS account_id,
-    account.email AS email,
-    account.password AS password,
-    company.name AS name
+  SELECT *
   FROM company
-  INNER JOIN account
-  ON company.account_id = account.id;
+  NATURAL JOIN account;
 
 -- jobseekers view
 
 CREATE VIEW job_seeker_account AS
-  SELECT
-    job_seeker.id,
-    account.id AS account_id,
-    account.email AS email,
-    account.password AS password,
-    job_seeker.fname AS fname,
-    job_seeker.lname AS lname
+  SELECT *
   FROM job_seeker
-  INNER JOIN account
-  ON job_seeker.account_id = account.id;
+  NATURAL JOIN account;
 
 -- indexes
 
