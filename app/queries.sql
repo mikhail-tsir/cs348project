@@ -16,6 +16,6 @@ ORDER BY relevance.score DESC;
 
 
 -- apply to a job
-INSERT INTO application
+INSERT INTO application (job_seeker_id, job_id)
 VALUES (%s, %s);
 
