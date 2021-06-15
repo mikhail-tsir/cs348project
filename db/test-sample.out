@@ -1,0 +1,13 @@
+id     jname   company_id      description     apply_deadline
+2      Hardware Developer      6       desc    2021-05-13 00:00:00
+1      Software Developer      5       desc    2021-02-04 00:00:00
+id     fname   lname   cv      phone
+3      Emily   Em      NULL    333-3333
+1      John    Smith   NULL    111-1111
+2      Bob     Smith   NULL    222-2222
+id     sname
+1      C++
+4      HTML/CSS
+3      Java
+5      Javascript
+2      Python
