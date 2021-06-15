@@ -27,3 +27,6 @@ VALUES (%s, %s, %s);
 INSERT INTO application (job_seeker_id, job_id)
 VALUES (%s, %s);
 
+-- recruiter adds a job listing
+INSERT INTO job (jname, company_id, description, apply_deadline)
+VALUES ($s, $s, $s, $s);

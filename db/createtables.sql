@@ -25,7 +25,7 @@ CREATE TABLE job_seeker (
 );
 
 CREATE TABLE job (
-  id INT NOT NULL PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   jname VARCHAR(255) NOT NULL,
   company_id INT NOT NULL,
   description TEXT NOT NULL,
