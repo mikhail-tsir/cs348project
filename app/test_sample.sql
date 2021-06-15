@@ -29,7 +29,7 @@ VALUES (%s, %s);
 
 -- recruiter adds a job listing
 INSERT INTO job (jname, company_id, description, apply_deadline)
-VALUES ($s, $s, $s, $s);
+VALUES (%s, %s, %s, %s);
 
 -- recruiter adds a related skill to a job
 INSERT INTO job_skill_requirements
