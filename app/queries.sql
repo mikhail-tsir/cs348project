@@ -1,9 +1,19 @@
 -- display jobs to the job seeker based on relevance
-SELECT job.*, skill.*
-FROM relevance, job, skill
+SELECT job.*
+FROM relevance, job
 WHERE relevance.job_id = job.id
   AND relevance.job_seeker_id = %s
 ORDER BY relevance.score DESC;
+
+-- display applicants to the hiring manager for a given job based on relevance
+SELECT job_seeker.*
+FROM relevance, job_seeker, application
+WHERE relevance.job_id = %s
+  AND relevance.job_seeker_id = job_seeker.id
+  AND application.job_id = relevance.job_id
+  AND application.job_seeker_id = job_seeker.id
+ORDER BY relevance.score DESC;
+
 
 -- apply to a job
 INSERT INTO application
