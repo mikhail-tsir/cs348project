@@ -14,6 +14,13 @@ WHERE relevance.job_id = %s
   AND application.job_seeker_id = job_seeker.id
 ORDER BY relevance.score DESC;
 
+-- display the possible skills
+SELECT *
+FROM skill;
+
+--  job seeker adds skills with a given proficiency
+INSERT INTO job_seeker_skill (skill_id, job_seeker_id, proficiency)
+VALUES (%s, %s, %s);
 
 -- apply to a job
 INSERT INTO application (job_seeker_id, job_id)
