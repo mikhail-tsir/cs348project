@@ -28,4 +28,9 @@ git clone git@github.com:mikhail-tsir/cs348project.git
 
     The docker compose file spins up the web server and the mysql database, in two separate docker containers. The mysql container automatically runs `db/init.sql` to create the table(s).
 
+    In order to generate a test dataset, run
+    ```bash
+        docker-compose run --rm generate_data
+    ```
+
 3. Navigate to `http://localhost:5000`

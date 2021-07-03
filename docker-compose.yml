@@ -13,6 +13,8 @@ services:
             - generate_data
     db:
         build: ./db
+        volumes:
+            - db:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: test_db
@@ -28,3 +30,7 @@ services:
             MYSQL_DATABASE: test_db
         links:
             - db
+        profiles:
+            - tools
+volumes:
+    db:

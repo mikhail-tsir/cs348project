@@ -146,9 +146,13 @@ def generate_company_account() -> Account:
     email = f"{generate_name()}@{company.name.split()[0].lower()}.com"
     return Account(email=email, password="password", type=company)
 
+seen_emails = set[str]()
 def generate_job_seeker_account() -> Account:
     job_seeker = generate_job_seeker()
-    email = f"{job_seeker.first_name}.{job_seeker.last_name}@gmail.com"
+    while (email := f"{job_seeker.first_name}.{job_seeker.last_name}@gmail.com") in seen_emails:
+        job_seeker = generate_job_seeker()
+    seen_emails.add(email)
+
     return Account(email=email, password="password", type=job_seeker)
 
 def get_skill_ids(cursor: pymysql.cursors.Cursor) -> dict[Skill, int]:
@@ -170,4 +174,20 @@ def add_account_to_db(account: Account, /, cursor: pymysql.cursors.Cursor):
             cursor.execute("INSERT INTO job_seeker (id, fname, lname, phone) VALUES (%s, %s, %s, %s)", (account_id, first_name, last_name, phone))
             cursor.executemany("INSERT INTO job_seeker_skill VALUES (%s, %s, %s)", ((skills[proficiency.skill], account_id, proficiency.proficiency) for proficiency in proficiencies))
 
+def random_row(*, trusted_table_str: str, cursor: pymysql.cursors.Cursor):
+    cursor.execute(f"SELECT COUNT(*) FROM {trusted_table_str}") 
+    num_rows: int = cursor.fetchone()[0]
+    selection = random.randrange(num_rows)
+    cursor.execute(f"SELECT * FROM {trusted_table_str} LIMIT 1 OFFSET %s", (selection,))
+    return cursor.fetchone()
 
+Application: TypeAlias = tuple[int, int]
+existing_applications = set[Application]()
+def create_random_job_application(cursor: pymysql.cursors.Cursor):
+    def get_application() -> Application:
+        return random_row(trusted_table_str="job_seeker", cursor=cursor)[0], random_row(trusted_table_str="job", cursor=cursor)[0]
+    while (application := get_application()) in existing_applications:
+        pass
+    existing_applications.add(application)
+    
+    cursor.execute("INSERT INTO application (job_seeker_id, job_id) VALUES (%s, %s)", application)
