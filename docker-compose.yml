@@ -24,3 +24,5 @@ services:
             MYSQL_DATABASE: test_db
         links:
             - db
+        profiles:
+            - generate_data

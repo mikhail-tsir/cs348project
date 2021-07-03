@@ -145,9 +145,13 @@ def generate_company_account() -> Account:
     email = f"{generate_name()}@{company.name.split()[0].lower()}.com"
     return Account(email=email, password="password", type=company)
 
+seen_emails = set[str]()
 def generate_job_seeker_account() -> Account:
     job_seeker = generate_job_seeker()
-    email = f"{job_seeker.first_name}.{job_seeker.last_name}@gmail.com"
+    while (email := f"{job_seeker.first_name}.{job_seeker.last_name}@gmail.com") not in seen_emails:
+        job_seeker = generate_job_seeker()
+    seen_emails.add(email)
+
     return Account(email=email, password="password", type=job_seeker)
 
 def get_skill_ids(cursor: pymysql.cursors.Cursor) -> dict[Skill, int]:
