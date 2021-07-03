@@ -21,28 +21,47 @@ def create_app():
 
     # blueprint for auth routes
     # import here to avoid circular imports (I think)
-    from app.auth import auth as auth_blueprint
+    from app.auth import jobseeker as jobseeker_blueprint
 
-    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(jobseeker_blueprint)
 
     # blueprint for all other parts of app
-    from app.main import main as main_blueprint
+    from app.main import base as base_blueprint
 
-    app.register_blueprint(main_blueprint)
+    app.register_blueprint(base_blueprint)
 
     login_manager = LoginManager()
-    login_manager.login_view = "auth.login"
+    login_manager.blueprint_login_views = {
+        "jobseeker": "jobseeker.login",
+        "company": "company.login",
+    }
+
     login_manager.init_app(app)
 
-    from app.models.job_seeker import JobSeeker
+    from app.models import Account, JobSeeker, Company
 
     @login_manager.user_loader
     def load_user(user_id):
         with db.connect() as conn, conn.cursor() as cursor:
+            # if account belongs to user
             cursor.execute(
                 "SELECT * FROM job_seeker_account WHERE id = %s;", int(user_id)
             )
             result = cursor.fetchone()
-            return JobSeeker(*result) if result else None
+            if result:
+                (id, fname, lname, email, password) = result
+                return Account(id, email, password, JobSeeker(fname, lname))
+            
+            # if account belongs to company
+            cursor.execute(
+                "SELECT * FROM company_account WHERE id = %s", int(user_id)
+            )
+            result = cursor.fetchone()
+            if result:
+                (id, name, email, password) = result
+                return Account(id, email, password, Company(name))
+            
+            # if id invalid
+            return None
 
     return app

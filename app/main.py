@@ -3,15 +3,15 @@ from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, current_user
 from . import db
 
-main = Blueprint("main", __name__)
+base = Blueprint("base", __name__)
 
 
-@main.route("/")
+@base.route("/")
 def index():
     return render_template("index.html")
 
 
-@main.route("/homepage")
+@base.route("/homepage")
 @login_required
 def homepage():
     return render_template(

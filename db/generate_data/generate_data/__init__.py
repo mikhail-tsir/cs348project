@@ -59,7 +59,8 @@ skills: dict[ProgrammerType, set[Skill]] = {
     "embedded": {"C", "C++", "Rust"},
     "mobile": {"Kotlin", "Swift"},
 }
-all_skills = reduce(set[Skill].union, skills.values(), set[Skill]())
+# all_skills = set(reduce(set[Skill].union, skills.values(), set[Skill]()))
+all_skills = skills["frontend"].union(skills["backend"]).union(skills["embedded"]).union(skills["mobile"])
 
 def generate_job(programmer_type: ProgrammerType) -> Job:
     relevant_skills = skills[programmer_type]

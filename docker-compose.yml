@@ -9,6 +9,8 @@ services:
             - "5000:5000"
         links:
             - db
+        depends_on:
+            - generate_data
     db:
         build: ./db
         environment:
@@ -19,6 +21,8 @@ services:
 
     generate_data:
         build: ./db/generate_data
+        volumes:
+            - ./db/generate_data:/app
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: test_db

@@ -169,14 +169,14 @@ CREATE VIEW relevance AS
 -- companies view
 
 CREATE VIEW company_account AS
-  SELECT *
+  SELECT id, name, email, password
   FROM company
   NATURAL JOIN account;
 
 -- jobseekers view
 
 CREATE VIEW job_seeker_account AS
-  SELECT *
+  SELECT id, fname, lname, email, password
   FROM job_seeker
   NATURAL JOIN account;
 
