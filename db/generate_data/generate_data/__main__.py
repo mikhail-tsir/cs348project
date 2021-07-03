@@ -1,20 +1,42 @@
-from . import generate_company_account, generate_job_seeker_account, add_account_to_db, all_skills
-from itertools import chain
+from . import generate_company_account, generate_job_seeker_account, add_account_to_db, all_skills, create_random_job_application
 import os
 import random
+import time
 
 import pymysql
-from pymysql.constants import CLIENT
+
+from tqdm import tqdm
 
 password = os.environ["MYSQL_ROOT_PASSWORD"]
 database = os.environ["MYSQL_DATABASE"]
 
 random.seed("f158d13d-1069-4282-b8d2-9826cc729338")
 
-with pymysql.connect(host="db", user="root", password=password, database=database, client_flag=CLIENT.MULTI_STATEMENTS) as connection:
-    with connection.cursor() as cursor:
-        cursor.executemany("INSERT INTO skill (sname) VALUES (%s)", all_skills)
+def establish_connection():
+    tries = 5
+    for try_ in range(tries):
+        print("Connecting to database")
+        try:
+            return pymysql.connect(host="db", user="root", password=password, database=database)
+        except pymysql.err.OperationalError:
+            print("Failed to connect")
+            if try_ in range(tries - 1):
+                print("Waiting to retry")
+                time.sleep(5)
+    raise RuntimeError("Failed to connect to database")
 
-        for account in chain((generate_company_account() for _ in range(500)), (generate_job_seeker_account() for _ in range(800))):
-            add_account_to_db(account, cursor)
-    connection.commit()
+with establish_connection() as connection:
+    with connection.cursor() as cursor:
+        cursor.executemany("INSERT INTO skill (sname) VALUES (%s)", ((skill,) for skill in all_skills))
+
+        for _ in tqdm(range(500), desc="Generating companies"):
+            add_account_to_db(generate_company_account(), cursor)
+            connection.commit()
+        
+        for _ in tqdm(range(1000), desc="Generating job seekers"):
+            add_account_to_db(generate_job_seeker_account(), cursor)
+            connection.commit()
+        
+        for _ in tqdm(range(600), desc="Generating job applications"):
+            create_random_job_application(cursor)
+            connection.commit()

@@ -30,7 +30,7 @@ git clone git@github.com:mikhail-tsir/cs348project.git
 
     In order to generate a test dataset, run
     ```bash
-        docker-compose run generate_data
+        docker-compose run --rm generate_data
     ```
 
 3. Navigate to `http://localhost:5000`

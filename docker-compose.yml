@@ -11,6 +11,8 @@ services:
             - db
     db:
         build: ./db
+        volumes:
+            - db:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: test_db
@@ -26,3 +28,5 @@ services:
             - db
         profiles:
             - tools
+volumes:
+    db:
