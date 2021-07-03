@@ -25,4 +25,4 @@ services:
         links:
             - db
         profiles:
-            - generate_data
+            - tools
