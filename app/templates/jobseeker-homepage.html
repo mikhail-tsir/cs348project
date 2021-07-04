@@ -1,3 +1,5 @@
+{% from "macros.html" import job_preview %}
+
 {% extends "base.html" %}
 {% block body %}
 <body>
@@ -47,32 +49,16 @@
                 <h1>Skills:</h1>
                 <span class="tag is-link is-large">Relational Databases</span>
                 <span class="tag is-link is-large">Functional Programming</span>
-                <span class="tag is-link is-normal">Object-Oriented Programming</span>
-                <span class="tag is-link is-normal">Cloud Computing</span>
-                <snap class="tag is-link is-normal">NoSQL Databases</snap>
+                <span class="tag is-link is-medium">Object-Oriented Programming</span>
+                <span class="tag is-link is-medium">Cloud Computing</span>
+                <snap class="tag is-link is-medium">NoSQL Databases</snap>
               </div>
             </div>
           </div>
           <div class="column">
-            <div class="card is-fullwidth">
-              <div class="card-header">
-                <p class="card-header-title">
-                  <a href="#">Software Engineer</a>
-                </p>
-              </div>
-              <div class="card-content">
-                <p>
-                  TechnoCorp<br>
-                  Ottawa, ON
-                </p>
-              </div>
-              <div class="card-footer">
-                <div class="card-footer-item has-text-left">
-                  <span class="tag is-large">Relational Databases</span>
-                  <span class="tag is-normal">Object-Oriented Programming</span>
-                </div>
-              </div>
-            </div>
+            {% for data in job_previews %}
+            {{ job_preview(data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"]) }}
+            {% endfor %}
           </div>
         </div>
       </div>

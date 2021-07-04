@@ -164,7 +164,8 @@ CREATE VIEW relevance AS
   FROM job_skill_requirements AS reqs
   INNER JOIN job_seeker_skill AS seeker
   ON reqs.skill_id = seeker.skill_id
-  GROUP BY reqs.job_id, seeker.job_seeker_id;
+  GROUP BY reqs.job_id, seeker.job_seeker_id
+  ORDER BY score;
 
 -- companies view
 

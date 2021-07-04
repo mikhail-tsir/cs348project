@@ -29,6 +29,7 @@
 </div>
 {%- endmacro %}
 
+
 {% macro phone_input() %}
 <div class="contact-item">
     <div class="item">
@@ -39,6 +40,7 @@
     </div>
 </div>
 {%- endmacro %}
+
 
 {% macro fname_lname_input() %}
 <div class="contact-item">
@@ -57,6 +59,7 @@
 </div>
 {%- endmacro %}
 
+
 {% macro name_input() %}
 <div class="contact-item">
     <div class="item">
@@ -68,6 +71,7 @@
 </div>
 {%- endmacro %}
 
+
 {% macro flashing() %}
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -76,4 +80,49 @@
 </div>
 {% endif %}
 {% endwith %}
+{%- endmacro %}
+
+
+{% macro skill_tag(sname, proficiency, colour=False) %}
+{% if proficiency == 3 %}
+{% set size = 'is-large' %}
+{% elif proficiency == 2 %}
+{% set size = 'is-medium' %}
+{% else %}
+{% set size = ''%}
+{% endif %}
+
+{% if colour %}
+{% set tag_colour = 'is-link' %}
+{% else %}
+{% set tag_colour = '' %}
+{% endif %}
+
+<span class="tag {{ size }} {{ tag_colour }}">{{ sname }}</span>
+{%- endmacro %}
+
+
+{% macro job_preview(title, company, location, description, min_skill_proficiencies) %}
+<div class="card is-fullwidth">
+    <div class="card-header">
+        <p class="card-header-title">
+            <a href="#">{{ title }}</a>
+        </p>
+    </div>
+    <div class="card-content">
+        <p>
+            {{ company }} - {{ location }}
+        </p>
+    </div>
+    <div class="card-content">
+        {{ description }}
+    </div>
+    <div class="card-footer">
+        <div class="card-footer-item has-text-left">
+            {% for key, value in min_skill_proficiencies.items() %}
+            {{ skill_tag(key, value) }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {%- endmacro %}
