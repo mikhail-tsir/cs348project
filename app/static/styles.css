@@ -19,6 +19,15 @@ p {
     line-height: 22px;
 }
 
+block {
+    opacity: 1.0;
+    width: 80%;
+    padding: 20px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 0 25px 0 #001e5f;
+}
+
 .header-text {
     position: absolute;
     margin: auto;
@@ -109,7 +118,8 @@ span.required {
     text-align: center;
 }
 
-button {
+button,
+.button {
     width: calc(50% - 10px);
     padding: 10px;
     border: none;
@@ -121,7 +131,8 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button:hover,
+.button:hover {
     background: #73aacc;
 }
 
