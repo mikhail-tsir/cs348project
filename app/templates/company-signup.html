@@ -1,0 +1,11 @@
+{% from "macros.html" import name_input, password_input, email_input %}
+
+{% extends "signup.html" %}
+
+{% block signup_body %}
+{{ name_input() }}
+{{ email_input() }}
+{{ password_input(confirm=True) }}
+{% endblock %}
+
+{% block user_type_nice %}Company{% endblock %}

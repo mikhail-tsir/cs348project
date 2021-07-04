@@ -1,0 +1,79 @@
+{% macro email_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Email Address<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="mtsirlin@uwaterloo.ca" name="email" />
+    </div>
+</div>
+{%- endmacro %}
+
+
+{% macro password_input(confirm) %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Password<span class="required">*</span></b>
+        </p>
+        <input type="password" placeholder="password" name="password" />
+    </div>
+    {% if confirm %}
+    <div class="item">
+        <p>
+            <b>Confirm Password<span class="required">*</span></b>
+        </p>
+        <input type="password" placeholder="password" name="confirm_password" />
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro phone_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Phone Number<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="xxxyyyzzzz" name="phone" />
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro fname_lname_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>First Name<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="First" name="fname" />
+    </div>
+    <div class="item">
+        <p>
+            <b>Last Name<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="Last" name="lname" />
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro name_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Name<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="Name" name="name" />
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro flashing() %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-danger">
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+{%- endmacro %}

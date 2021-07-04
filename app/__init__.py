@@ -34,8 +34,8 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.blueprint_login_views = {
-        "jobseeker": "jobseeker.login",
-        "company": "company.login",
+        "jobseeker": "jobseeker_auth.login",
+        "company": "company_auth.login",
     }
 
     login_manager.init_app(app)

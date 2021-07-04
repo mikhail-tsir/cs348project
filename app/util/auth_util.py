@@ -12,7 +12,7 @@ def create_user_model(user_type: str, attributes: Tuple):
     if user_type == "jobseeker":
         (id, fname, lname, email, password) = attributes
         return Account(id, email, password, JobSeeker(fname, lname))
-    
+
     (id, name, email, password) = attributes
     return Account(id, email, password, Company(name))
 
@@ -24,14 +24,16 @@ def generic_login(user_type):
         try:
             cursor = conn.cursor()
             # check if user exists
-            user_view_name = "job_seeker_account" if user_type == "jobseeker" else "company_account"
+            user_view_name = (
+                "job_seeker_account" if user_type == "jobseeker" else "company_account"
+            )
             cursor.execute(f"SELECT * FROM {user_view_name} WHERE email = %s;", email)
             result = cursor.fetchone()
 
             if not result:
                 flash("This email address isn't registered.")
                 return redirect(url_for(".login"))
-            
+
             if not check_password_hash(result[-1], password):
                 flash("Invalid Credentials.")
                 return redirect(url_for(".login"))
@@ -48,8 +50,8 @@ def generic_login(user_type):
             return redirect(url_for(f".login"))
 
 
-def insert_new_user(user_type, form, cursor):
-    hashed_pw = generate_password_hash(form.get("password"))
+def insert_new_user(user_type, cursor):
+    hashed_pw = generate_password_hash(request.form.get("password"))
 
     # insert account info first
     cursor.execute(
@@ -57,7 +59,7 @@ def insert_new_user(user_type, form, cursor):
         INSERT INTO account (email, password)
         VALUES (%s, %s);
         """,
-        (form.get("email"), hashed_pw),
+        (request.form.get("email"), hashed_pw),
     )
 
     # get id of newly inserted user
@@ -66,7 +68,7 @@ def insert_new_user(user_type, form, cursor):
         SELECT id FROM account
         WHERE email = %s;
         """,
-        form["email"],
+        request.form["email"],
     )
 
     result = cursor.fetchone()
@@ -79,30 +81,36 @@ def insert_new_user(user_type, form, cursor):
             INSERT INTO job_seeker (fname, lname, phone, id)
             VALUES (%s, %s, %s, %s);
             """,
-            (form["fname"], form["lname"], form["phone"], account_id),
+            (
+                request.form["fname"],
+                request.form["lname"],
+                request.form["phone"],
+                account_id,
+            ),
         )
         return
-    
+
     # for company accounts
     cursor.execute(
         """
-        INSERT INTO company (name, description)
-        VALUES (%s, %s);
+        INSERT INTO company (name, description, id)
+        VALUES (%s, 'Sample description', %s);
         """,
-        (form["name"], form["description"])
+        (request.form["name"], account_id),
     )
 
 
-
-def generic_signup(user_type, form):
+def generic_signup(user_type):
     password, confirm_password = (
-        form.get("password"),
-        form.get("confirm_password"),
+        request.form.get("password"),
+        request.form.get("confirm_password"),
     )
 
     with db.connect() as conn, conn.cursor() as cursor:
         # check if user already exists
-        cursor.execute("SELECT * FROM account WHERE email = %s", form.get("email"))
+        cursor.execute(
+            "SELECT * FROM account WHERE email = %s", (request.form.get("email"),)
+        )
         result = cursor.fetchall()
 
         if result:
@@ -115,18 +123,21 @@ def generic_signup(user_type, form):
             return redirect(url_for(".signup"))
 
         MIN_PASSWORD_LENGTH = 4
-        
+
         # validate password
         # TODO better validation
         if len(password) < MIN_PASSWORD_LENGTH:
-            flash(f"Password is not secure enough (must be at least {MIN_PASSWORD_LENGTH} characters).")
+            flash(
+                f"Password is not secure enough (must be at least {MIN_PASSWORD_LENGTH} characters)."
+            )
             return redirect(url_for(".signup"))
 
         try:
-            insert_new_user(user_type, form, cursor)
+            insert_new_user(user_type, cursor)
             conn.commit()
         except MySQLError as e:
-            print(e)
+            # print(e)
+            raise e
             conn.rollback()
             flash("Oops! There was an issue with sign up. Please try again")
             return redirect(url_for(".signup"))

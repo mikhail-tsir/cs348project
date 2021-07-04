@@ -1,0 +1,27 @@
+{% from "macros.html" import flashing %}
+
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block body %}
+<style>
+    .contact-item {
+        justify-content: space-between;
+    }
+</style>
+<div class="testbox">
+    <form id=frm1 method="POST" action="{{ url_for('.signup_post') }}">
+        <div class="banner">
+            <h1 class="header-text">Sign Up</h1>
+        </div>
+        <br>
+        {{ flashing() }}
+        <div class="btn-block">
+            <img src="{{url_for('static', filename='profile.png')}}" alt="Avatar" class="avatar" width="100">
+        </div>
+        {% block signup_body %}{% endblock %}
+        <div class="btn-block">
+            <button type="submit">Sign Up As {% block user_type_nice %}{% endblock %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

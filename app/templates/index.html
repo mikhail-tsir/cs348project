@@ -146,7 +146,7 @@
             .contact-item {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-between;
+                justify-content: center;
             }
 
             .name-item input {
@@ -172,7 +172,7 @@
             </div>
             <br>
             <div class="btn-block">
-                <a class="button " href="#">Sign Up as Company</a>
+                <a class="button " href="{{ url_for('company_auth.signup') }}">Sign Up as Company</a>
             </div>
             <br>
             Already have a Company account? <a href="{{ url_for('company_auth.login') }}">Log In</a>
