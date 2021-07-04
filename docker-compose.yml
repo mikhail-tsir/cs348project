@@ -9,8 +9,8 @@ services:
             - "5000:5000"
         links:
             - db
-        depends_on:
-            - generate_data
+        # depends_on:
+        #     - generate_data
     db:
         build: ./db
         volumes:

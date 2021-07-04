@@ -9,11 +9,3 @@ base = Blueprint("base", __name__)
 @base.route("/")
 def index():
     return render_template("index.html")
-
-
-@base.route("/homepage")
-@login_required
-def homepage():
-    return render_template(
-        "jobseeker-homepage.html", fname=current_user.fname, lname=current_user.lname
-    )

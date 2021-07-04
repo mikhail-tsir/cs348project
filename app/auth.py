@@ -1,13 +1,10 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import login_user, login_required, logout_user
-from pymysql.err import MySQLError
-from werkzeug.security import generate_password_hash, check_password_hash
+from app.decorators import jobseeker_login_required
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, logout_user
 
-from . import db
+from app.blueprints import jobseeker, company
 from app.models import JobSeeker, Company, Account
-from app.util.auth_util import generic_login
-
-jobseeker = Blueprint("jobseeker", __name__)
+from app.util.auth_util import generic_login, generic_signup
 
 
 @jobseeker.route("/login")
@@ -27,72 +24,15 @@ def login_post():
 
 @jobseeker.route("/signup", methods=["POST"])
 def signup_post():
-    fname, lname, email, pw, confirm_pw, phone = (
-        request.form.get("fname"),
-        request.form.get("lname"),
-        request.form.get("email"),
-        request.form.get("password"),
-        request.form.get("confirm_password"),
-        request.form.get("phone"),
+    return generic_signup("jobseeker", request.form)
+
+
+@jobseeker.route("/homepage")
+@jobseeker_login_required
+def homepage():
+    return render_template(
+        "jobseeker-homepage.html", fname=current_user.user.fname, lname=current_user.user.lname
     )
-
-    with db.connect() as conn:
-        conn.autocommit = False
-        cursor = conn.cursor()
-        # check if user already exists
-        cursor.execute("SELECT * FROM account WHERE email = %s", email)
-        result = cursor.fetchall()
-
-        if result:
-            flash("User already exists")
-            return redirect(url_for("jobseeker.signup"))
-
-        # check if passwords match
-        if pw != confirm_pw:
-            flash("Passwords don't match")
-            return redirect(url_for("jobseeker.signup"))
-
-        hashed_pw = generate_password_hash(pw)
-
-        try:
-            # insert account info first
-            cursor.execute(
-                """
-                INSERT INTO account (email, password)
-                VALUES (%s, %s);
-                """,
-                (email, hashed_pw),
-            )
-
-            # get id of newly inserted user
-            cursor.execute(
-                """
-                SELECT id FROM account
-                WHERE email = %s;
-                """,
-                email,
-            )
-
-            result = cursor.fetchone()
-            account_id = result[0] if result else -1
-
-            cursor.execute(
-                """
-                INSERT INTO job_seeker (fname, lname, phone, id)
-                VALUES (%s, %s, %s, %s);
-                """,
-                (fname, lname, phone, account_id),
-            )
-
-            conn.commit()
-        except MySQLError as e:
-            print(e)
-            conn.rollback()
-            flash("Oops! There was an issue with sign up. Please try again")
-            raise e
-            return redirect(url_for("jobseeker.signup"))
-
-    return redirect(url_for("jobseeker.login"))
 
 
 # TODO logout should be a POST request
