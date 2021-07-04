@@ -20,11 +20,17 @@ def create_app():
     db.init_app(app)
 
     # import here to avoid circular imports (I think)
-    from app.blueprints import base, jobseeker, company
+    from app.index import base
+    from app.auth.company_auth import company_auth
+    from app.auth.jobseeker_auth import jobseeker_auth
+    from app.roles.jobseeker import jobseeker
+    from app.roles.company import company
 
     app.register_blueprint(base)
-    app.register_blueprint(jobseeker)
-    app.register_blueprint(company)
+    app.register_blueprint(company_auth, url_prefix="/company")
+    app.register_blueprint(jobseeker_auth, url_prefix="/jobseeker")
+    app.register_blueprint(company, url_prefix="/company")
+    app.register_blueprint(jobseeker, url_prefix="/jobseeker")
 
     login_manager = LoginManager()
     login_manager.blueprint_login_views = {

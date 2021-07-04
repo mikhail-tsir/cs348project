@@ -11,7 +11,7 @@
         html,
         body {
             min-height: 100%;
-            background: url("{{url_for('static', filename='background.jpg')}}");
+            background: url("{{ url_for('static', filename='background.jpg') }}");
         }
 
         body,
@@ -175,13 +175,13 @@
                 <a class="button " href="#">Sign Up as Company</a>
             </div>
             <br>
-            Already have a Company account? <a href="#">Log In</a>
+            Already have a Company account? <a href="{{ url_for('company_auth.login') }}">Log In</a>
             <br>
             <div class="btn-block">
-                <a class="button" href="{{ url_for('jobseeker.signup') }}">Sign Up as Job Seeker</a>
+                <a class="button" href="{{ url_for('jobseeker_auth.signup') }}">Sign Up as Job Seeker</a>
             </div>
             <br>
-            Already have a Jobseeker account? <a href="{{ url_for('jobseeker.login') }}">Log In</a>
+            Already have a Jobseeker account? <a href="{{ url_for('jobseeker_auth.login') }}">Log In</a>
             <br>
           </block>
     </div>

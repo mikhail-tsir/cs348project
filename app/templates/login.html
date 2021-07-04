@@ -166,7 +166,7 @@
 
 <body>
     <div class="testbox">
-        <form id=frm1 action="/login" method="POST">
+        <form id=frm1 action="{{url_for('.login_post')}}" method="POST">
             <div class="banner">
                 <h1>Log In</h1>
             </div>
@@ -187,7 +187,7 @@
                     <p>
                         <b>Email Address<span class="required">*</span></b>
                     </p>
-                    <input type="text" placeholder="mtsirlin@uwaterloo.ca" name="email" />
+                    <input type="text" placeholder="email@company.ca" name="email" />
                 </div>
             </div>
             <div class="contact-item">
@@ -199,7 +199,7 @@
                 </div>
             </div>
             <div class="btn-block">
-                <button type="submit">Login As Job Seeker</button>
+                <button type="submit">Login As {{user_type_nice}}</button>
             </div>
         </form>
     </div>

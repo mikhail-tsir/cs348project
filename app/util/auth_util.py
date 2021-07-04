@@ -30,11 +30,11 @@ def generic_login(user_type):
 
             if not result:
                 flash("This email address isn't registered.")
-                return redirect(url_for(f"{user_type}.login"))
+                return redirect(url_for(".login"))
             
             if not check_password_hash(result[-1], password):
                 flash("Invalid Credentials.")
-                return redirect(url_for(f"{user_type}.login"))
+                return redirect(url_for(".login"))
 
             user = create_user_model(user_type, result)
             login_user(user)
@@ -45,7 +45,7 @@ def generic_login(user_type):
             flash(
                 "Oops, there was an issue processing the login request. Please try again."
             )
-            return redirect(url_for(f"{user_type}.login"))
+            return redirect(url_for(f".login"))
 
 
 def insert_new_user(user_type, form, cursor):
@@ -107,12 +107,12 @@ def generic_signup(user_type, form):
 
         if result:
             flash("User already exists")
-            return redirect(url_for(f"{user_type}.signup"))
+            return redirect(url_for(".signup"))
 
         # check if passwords match
         if password != confirm_password:
             flash("Passwords don't match")
-            return redirect(url_for(f"{user_type}.signup"))
+            return redirect(url_for(".signup"))
 
         MIN_PASSWORD_LENGTH = 4
         
@@ -120,7 +120,7 @@ def generic_signup(user_type, form):
         # TODO better validation
         if len(password) < MIN_PASSWORD_LENGTH:
             flash(f"Password is not secure enough (must be at least {MIN_PASSWORD_LENGTH} characters).")
-            return redirect(url_for(f"{user_type}.signup"))
+            return redirect(url_for(".signup"))
 
         try:
             insert_new_user(user_type, form, cursor)
@@ -129,6 +129,6 @@ def generic_signup(user_type, form):
             print(e)
             conn.rollback()
             flash("Oops! There was an issue with sign up. Please try again")
-            return redirect(url_for(f"{user_type}.signup"))
+            return redirect(url_for(".signup"))
 
-    return redirect(url_for(f"{user_type}.login"))
+    return redirect(url_for(".login"))
