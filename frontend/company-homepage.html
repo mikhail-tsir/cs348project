@@ -21,14 +21,12 @@
     input,
     select,
     p {
-      padding: 0;
-      margin: 0;
-      outline: none;
       font-family: Roboto, Arial, sans-serif;
       font-size: 18px;
       color: rgb(0, 0, 0);
       line-height: 22px;
     }
+
   </style>
 </head>
 
@@ -37,27 +35,12 @@
     <div class="columns is-centered">
       <div class="column is-8">
         <nav class="navbar is-8" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <div class="navbar-item">
-              <h1>Welcome, <b>company!</b></h1>
-            </div>
-          </div>
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <a class="navbar-item">
-                View Postings
+              <a class="navbar-item" href="company-homepage.html">Company HomePage</a>
+              <a class="navbar-item" href="jobPostingForm.html">View Postings
+              <a class="navbar-item" href="jobPostingForm.html">Create a Job Posting
               </a>
-
-              <a class="navbar-item">
-                My applications
-              </a>
-
-              <a class="navbar-item">
-                My skills
-              </a>
-              <div class="btn-block">
-                <button type="submit"><a href="jobPostingForm.html">Create a Job Posting</a></button>
-              </div>
             </div>
           </div>
         </nav>
@@ -68,41 +51,24 @@
               <div class="card-content">
                 <div class="media">
                   <div class="media-left">
-                    <figure class="image is-48x48">
-                      <img src="profile.png" alt="Profile">
-                    </figure>
-                  </div>
-                  <div class="media-content">
-                    <p class="title is-4">company</p>
+                      <img src="profile.png" alt="Profile" width="130">
                   </div>
                 </div>
-                <h1>Skills:</h1>
-                <span class="tag is-link is-large">Relational Databases</span>
-                <span class="tag is-link is-large">Functional Programming</span>
-                <span class="tag is-link is-normal">Object-Oriented Programming</span>
-                <span class="tag is-link is-normal">Cloud Computing</span>
-                <snap class="tag is-link is-normal">NoSQL Databases</snap>
               </div>
             </div>
           </div>
           <div class="column">
             <div class="card is-fullwidth">
-              <div class="card-header">
-                <p class="card-header-title">
-                  <a href="#">Software Engineer</a>
-                </p>
-              </div>
               <div class="card-content">
                 <p>
-                  TechnoCorp<br>
-                  Ottawa, ON
+                  <b>Company Profile</b><br><br>
+                  Name: TechnoCorp<br><br>
+                  Location: Ottawa, ON<br><br>
+                  Website: N/A<br><br>
+                  Open Postings: #<br><br>
+                  Expired Postings: #<br><br>
+                  Filled Postings: #<br><br>
                 </p>
-              </div>
-              <div class="card-footer">
-                <div class="card-footer-item has-text-left">
-                  <span class="tag is-large">Relational Databases</span>
-                  <span class="tag is-normal">Object-Oriented Programming</span>
-                </div>
               </div>
             </div>
           </div>
