@@ -10,19 +10,20 @@ services:
         links:
             - db
     db:
-        build: ./db
-        volumes:
-            - db:/var/lib/mysql
+        image: mysql
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: test_db
         ports:
             - "3307:3306"
+        volumes:
+            - ./db:/docker-entrypoint-initdb.d/:ro
+            - db:/var/lib/mysql
 
     generate_data:
-        build: ./db/generate_data
+        build: ./generate_data
         volumes:
-            - ./db/generate_data:/app
+            - ./generate_data:/app
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: test_db

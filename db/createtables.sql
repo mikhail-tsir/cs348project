@@ -46,6 +46,7 @@ CREATE TABLE application (
   FOREIGN KEY (job_id) REFERENCES job(id)
 );
 
+-- TODO add location column
 CREATE TABLE job_seeker_skill (
   skill_id INT NOT NULL,
   job_seeker_id INT NOT NULL,
@@ -164,8 +165,7 @@ CREATE VIEW relevance AS
   FROM job_skill_requirements AS reqs
   INNER JOIN job_seeker_skill AS seeker
   ON reqs.skill_id = seeker.skill_id
-  GROUP BY reqs.job_id, seeker.job_seeker_id
-  ORDER BY score;
+  GROUP BY reqs.job_id, seeker.job_seeker_id;
 
 -- companies view
 

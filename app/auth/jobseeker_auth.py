@@ -22,4 +22,4 @@ def login_post():
 
 @jobseeker_auth.route("/signup", methods=["POST"])
 def signup_post():
-    return generic_signup("jobseeker", request.form)
+    return generic_signup("jobseeker")
