@@ -1,22 +1,26 @@
--- new job seeker or company account
+-- -- jobseeker signup
 INSERT INTO account (id, email, password)
 VALUES (10000, 'ewfwf@gmail.com', 'abcde');
 
--- jobseeker signup
+
 INSERT INTO job_seeker (id, fname, lname, phone)
 VALUES (10000, 'Bob', 'Smith', '(874) 131-3972');
 
 -- company signup
+
+INSERT INTO account (id, email, password)
+VALUES (10001, 'asdf@asdf.com', 'asdfnsdfl');
+
 INSERT INTO company (id, name, description)
-VALUES (10000, 'abc', 'desc')
+VALUES (10001, 'abc', 'desc');
 
 -- create new job posting
 INSERT INTO job (id, jname, company_id, description, apply_deadline)
-VALUES (10000, 'newJob', 10000, 'desc', '2021-08-30 00:00:00'); 
+VALUES (10000, 'newJob', 10001, 'desc', '2021-08-30 00:00:00'); 
 
 -- create new skill category
 INSERT INTO skill (id, sname)
-VALUES (10000, 'javascript')
+VALUES (10000, 'javascript');
 
 -- jobseeker applies to new job
 INSERT INTO application (job_seeker_id, job_id)
@@ -24,11 +28,11 @@ VALUES (10000, 10000);
 
 -- job seeker add to their skills
 INSERT INTO job_seeker_skill (skill_id, job_seeker_id, proficiency)
-VALUES (10000, 10000, 2)
+VALUES (10000, 10000, 2);
 
 -- job requirements
 INSERT INTO job_skill_requirements (job_id, skill_id, min_proficiency)
-VALUES (10000, 10000, 1)
+VALUES (10000, 10000, 1);
 
 -- Hardcoded numeric and string values will be replaced by actual values provided by the user
 
@@ -53,23 +57,28 @@ ORDER BY relevance.score DESC;
 SELECT *
 FROM skill;
 
--- display job_seeker_skill before insert
+-- display job_seeker_skill before update
 SELECT *
 FROM job_seeker_skill;
 
 -- update skill proficiency from 2 to 3
 UPDATE job_seeker_skill
 SET proficiency = 3
-WHERE skill_id = 10000, job_seeker_id = 10000
+WHERE skill_id = 10000
+AND job_seeker_id = 10000;
 
 -- display job_seeker_skill after update
 SELECT *
 FROM job_seeker_skill;
 
+-- display job_skill_requirements before update
+SELECT * FROM job_skill_requirements;
+
 -- update job skill requirement's proficiency
 UPDATE job_skill_requirements
-SET proficiency = 3
-WHERE job_id = 1, skill_id = 4
+SET min_proficiency = 3
+WHERE job_id = 10000
+AND skill_id = 10000;
 
 -- display job_skill_requirements after update
 SELECT *

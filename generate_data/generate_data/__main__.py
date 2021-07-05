@@ -13,7 +13,7 @@ database = os.environ["MYSQL_DATABASE"]
 random.seed("f158d13d-1069-4282-b8d2-9826cc729338")
 
 def establish_connection():
-    tries = 5
+    tries = 10
     for try_ in range(tries):
         print("Connecting to database")
         try:
