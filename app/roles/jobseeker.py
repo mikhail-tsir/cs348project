@@ -7,33 +7,42 @@ from app import db
 jobseeker = Blueprint("jobseeker", __name__)
 
 
+def get_skills(jobseeker_id):
+    query = """SELECT skill.sname, proficiency
+    FROM job_seeker_skill
+    INNER JOIN skill
+    ON skill_id = id
+    AND job_seeker_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, (jobseeker_id,))
+
+        return {pair[0]: pair[1] for pair in cursor.fetchall()}
+
+
 def display_job_dicts(jobseeker_id):
     # TODO get rid of limit and paginate results
-    query = """SELECT temp.id, temp.jname, company.description, company.name
+    query = """SELECT temp.id, temp.jname, temp.description, company.name, temp.score
     FROM (
-        SELECT job.*
+        SELECT job.*, relevance.score
         FROM relevance
         INNER JOIN job
         ON relevance.job_id = job.id
         AND relevance.job_seeker_id = %s
         AND job.apply_deadline <= CURRENT_TIMESTAMP
-        ORDER BY relevance.score DESC
     ) AS temp
     INNER JOIN company
         ON company.id = temp.company_id
+    ORDER BY score DESC
     LIMIT 10;"""
 
-    # query = """SELECT *
-    # FROM job_seeker_account
-    # LIMIT 10;"""
-
     with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query)
+        cursor.execute(query, (jobseeker_id,))
 
-        # id, jname, company_id, description, apply_deadline, company.name
+        # id, jname, description, company.name, relevance_score
         result = cursor.fetchall()
 
-        # return result
 
         job_dicts = []
 
@@ -53,9 +62,10 @@ def display_job_dicts(jobseeker_id):
             job_dicts.append(
                 {
                     "title": row[1],
-                    "company": row[5],
+                    "company": row[3],
                     "location": "Ottawa, ON",
-                    "description": row[3],
+                    "description": row[2],
+                    "relevance": row[4],
                     "min_skill_proficiencies": skills_dict,
                 }
             )
@@ -66,19 +76,11 @@ def display_job_dicts(jobseeker_id):
 @jobseeker.route("/homepage")
 @jobseeker_login_required
 def homepage():
-    # jobs_dict = {
-    #     "title": "Backend Software Engineer",
-    #     "company": "TechnoCorp",
-    #     "location": "Ottawa, ON",
-    #     "description": "We are looking for a talented Backend engineer to work on our public API.\nCome join us!",
-    #     "min_skill_proficiencies": {"Relational Databases": 3, "C++": 1},
-    # }
     job_dicts = display_job_dicts(current_user.id)
     return render_template(
         "jobseeker-homepage.html",
         fname=current_user.user.fname,
         lname=current_user.user.lname,
         job_previews=job_dicts,
+        skills=get_skills(current_user.id)
     )
-
-    # return str(display_job_dicts(current_user.id))

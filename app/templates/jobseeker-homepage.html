@@ -1,4 +1,4 @@
-{% from "macros.html" import job_preview %}
+{% from "macros.html" import job_preview, skill_tag %}
 
 {% extends "base.html" %}
 {% block body %}
@@ -47,17 +47,16 @@
                   </div>
                 </div>
                 <h1>Skills:</h1>
-                <span class="tag is-link is-large">Relational Databases</span>
-                <span class="tag is-link is-large">Functional Programming</span>
-                <span class="tag is-link is-medium">Object-Oriented Programming</span>
-                <span class="tag is-link is-medium">Cloud Computing</span>
-                <snap class="tag is-link is-medium">NoSQL Databases</snap>
+                {% for skill, proficiency in skills.items() %}
+                {{ skill_tag(skill, proficiency, colour=True) }}
+                {% endfor %}
               </div>
             </div>
           </div>
           <div class="column">
             {% for data in job_previews %}
             {{ job_preview(data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"]) }}
+            <br>
             {% endfor %}
           </div>
         </div>
