@@ -48,3 +48,4 @@ git clone git@github.com:mikhail-tsir/cs348project.git
 * Authorization: Users logged in as a company cannot access jobseeker pages and users logged in as a job seeker cannot access company pages.
   * This feature is implemented in `app/decorators.py`
 * A very nice UI.
+* Arguably log in and sign up are 2 different features (they require completely different SQL queries) so we really have 4 core features in addition to these bonus ones :)
