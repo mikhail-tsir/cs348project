@@ -16,7 +16,11 @@ VALUES (10001, 'abc', 'desc');
 
 -- create new job posting
 INSERT INTO job (id, jname, company_id, description, apply_deadline)
-VALUES (10000, 'newJob', 10001, 'desc', '2021-08-30 00:00:00'); 
+VALUES (10000, 'newJob', 10001, 'desc', '2021-08-30 00:00:00');
+
+-- job requirements
+INSERT INTO job_skill_requirements (job_id, skill_id, min_proficiency)
+VALUES (10000, 10000, 1);
 
 -- create new skill category
 INSERT INTO skill (id, sname)
@@ -29,10 +33,6 @@ VALUES (10000, 10000);
 -- job seeker add to their skills
 INSERT INTO job_seeker_skill (skill_id, job_seeker_id, proficiency)
 VALUES (10000, 10000, 2);
-
--- job requirements
-INSERT INTO job_skill_requirements (job_id, skill_id, min_proficiency)
-VALUES (10000, 10000, 1);
 
 -- Hardcoded numeric and string values will be replaced by actual values provided by the user
 

@@ -184,5 +184,3 @@ CREATE VIEW job_seeker_account AS
 -- indexes
 
 CREATE INDEX email_idx ON account (email);
-
-CREATE INDEX email_password_idx ON account (email, password);
