@@ -1,0 +1,12 @@
+{% from "macros.html" import skills_form %}
+{% extends "jobseeker-base.html" %}
+
+{% block jobseeker_body %}
+<div class="columns is-centered">
+    <div class="column is-7">
+        <form class="form">
+            {{ skills_form(skills) }}
+        </form>
+    </div>
+</div>
+{% endblock %}

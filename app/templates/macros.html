@@ -126,3 +126,25 @@
     </div>
 </div>
 {%- endmacro %}
+
+{% macro skills_form(skills) %}
+<table class="table">
+    <tbody>
+        {% for skill in skills %}
+        <tr>
+            <td><span class="tag is-info is-large">{{ skill[1] }}</span></td>
+            <td>
+                <div class="select" name="{{ skill[0] }}">
+                    <select>
+                        <option>Proficiency</option>
+                        <option>Basic</option>
+                        <option>Working</option>
+                        <option>Advanced</option>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%- endmacro %}

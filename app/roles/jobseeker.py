@@ -84,3 +84,32 @@ def homepage():
         job_previews=job_dicts,
         skills=get_skills(current_user.id)
     )
+
+
+def render_jobseeker_page(filename, **kwargs):
+    return render_template(
+        filename,
+        fname=current_user.user.fname,
+        lname=current_user.user.lname,
+        **kwargs
+    )
+
+
+@jobseeker.route("/skills")
+@jobseeker_login_required
+def skills_page():
+    # get current user's skills
+    skills_query = """SELECT skill.id, skill.sname, job_seeker_skill.proficiency
+    FROM job_seeker_skill
+    INNER JOIN skill
+    ON job_seeker_skill.skill_id = skill.id
+    WHERE job_seeker_skill.job_seeker_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(skills_query, current_user.id)
+
+        # (skill_id, skill_name, proficiency) tuples
+        result = cursor.fetchall()
+
+        return render_jobseeker_page("skills.html", skills=result)

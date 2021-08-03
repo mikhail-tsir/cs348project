@@ -1,67 +1,33 @@
 {% from "macros.html" import job_preview, skill_tag %}
 
-{% extends "base.html" %}
-{% block body %}
-<body>
-  <section class="section is-primary is-fullheight is-8">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <nav class="navbar is-8" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <div class="navbar-item">
-              <h1>Welcome, <b>{{ fname }}!</b></h1>
-            </div>
+{% extends "jobseeker-base.html" %}
+{% block jobseeker_body %}
+<div class="columns">
+  <div class="column is-3">
+    <div class="card has-background-info-light">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img src="{{url_for('static', filename='profile.png')}}" alt="Profile">
+            </figure>
           </div>
-          <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-              <a class="navbar-item">
-                View Postings
-              </a>
-
-              <a class="navbar-item">
-                My applications
-              </a>
-
-              <a class="navbar-item">
-                My skills
-              </a>
-            </div>
-            <div class="navbar-end">
-              <a class="navber-item" href="/logout">Log Out</a>
-            </div>
-          </div>
-        </nav>
-        <br>
-        <div class="columns">
-          <div class="column is-3">
-            <div class="card has-background-info-light">
-              <div class="card-content">
-                <div class="media">
-                  <div class="media-left">
-                    <figure class="image is-48x48">
-                      <img src="{{url_for('static', filename='profile.png')}}" alt="Profile">
-                    </figure>
-                  </div>
-                  <div class="media-content">
-                    <p class="title is-4">{{ fname }} {{ lname }}</p>
-                  </div>
-                </div>
-                <h1>Skills:</h1>
-                {% for skill, proficiency in skills.items() %}
-                {{ skill_tag(skill, proficiency, colour=True) }}
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            {% for data in job_previews %}
-            {{ job_preview(data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"]) }}
-            <br>
-            {% endfor %}
+          <div class="media-content">
+            <p class="title is-4">{{ fname }} {{ lname }}</p>
           </div>
         </div>
+        <h1>Skills:</h1>
+        {% for skill, proficiency in skills.items() %}
+        {{ skill_tag(skill, proficiency, colour=True) }}
+        {% endfor %}
       </div>
     </div>
-  </section>
-</body>
+  </div>
+  <div class="column">
+    {% for data in job_previews %}
+    {{ job_preview(data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"]) }}
+    <br>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

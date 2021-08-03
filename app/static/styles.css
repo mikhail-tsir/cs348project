@@ -62,7 +62,7 @@ form {
     padding: 20px;
     border-radius: 6px;
     background: #fff;
-    box-shadow: 0 0 25px 0 #001e5f;
+    /* box-shadow: 0 0 25px 0 #001e5f; */
 }
 
 .banner {
@@ -162,3 +162,8 @@ body::after {
         width: calc(100% - 12px);
     }
 }
+
+.table {
+    margin-left: auto;
+    margin-right: auto;
+  }
