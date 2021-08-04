@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, jsonify, render_template
+from flask import Blueprint, current_app, jsonify, render_template, request
 from flask.wrappers import Response
 from flask_login import current_user
 
@@ -123,9 +123,25 @@ def delete_skill(skill_id):
     """
 
     with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM job_seeker_skill WHERE skill_id = %s AND job_seeker_id = %s", (skill_id, current_user.id))
-        result = cursor.fetchall()
-        current_app.logger.info(result)
+        # cursor.execute("SELECT * FROM job_seeker_skill WHERE skill_id = %s AND job_seeker_id = %s", (skill_id, current_user.id))
+        # result = cursor.fetchall()
+        # current_app.logger.info(result)
         cursor.execute(query, (skill_id, current_user.id))
+        conn.commit()
+        return jsonify(success=True)
+
+
+@jobseeker.route("/change_proficiency/<int:skill_id>", methods=["PUT"])
+@jobseeker_login_required
+def change_proficiency(skill_id):
+    new_prof = int(request.args.get("proficiency"))
+    query = """UPDATE job_seeker_skill
+    SET proficiency = %s
+    WHERE job_seeker_id = %s
+    AND skill_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, (new_prof, current_user.id, skill_id))
         conn.commit()
         return jsonify(success=True)
