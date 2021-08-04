@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, jsonify, render_template, request
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from flask.wrappers import Response
 from flask_login import current_user
 
@@ -105,13 +105,27 @@ def skills_page():
     WHERE job_seeker_skill.job_seeker_id = %s;
     """
 
+    all_skills_query = """SELECT id, sname
+    FROM skill
+    WHERE id NOT IN (
+        SELECT skill_id
+        FROM job_seeker_skill
+        WHERE job_seeker_id = %s
+    );
+    """
+
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(skills_query, current_user.id)
 
         # (skill_id, skill_name, proficiency) tuples
         result = cursor.fetchall()
 
-        return render_jobseeker_page("skills.html", skills=result)
+        cursor.execute(all_skills_query, current_user.id)
+        all_skills = cursor.fetchall()
+        # return str(all_skills) + str(len(all_skills))
+        conn.commit()
+
+        return render_jobseeker_page("skills.html", skills=result, all_skills=all_skills)
 
 
 @jobseeker.route("/delete_skill/<int:skill_id>", methods=["DELETE"])
@@ -145,3 +159,23 @@ def change_proficiency(skill_id):
         cursor.execute(query, (new_prof, current_user.id, skill_id))
         conn.commit()
         return jsonify(success=True)
+
+
+@jobseeker.route("/add_skill", methods=["POST"])
+@jobseeker_login_required
+def add_skill():
+    try:
+        query = """
+        INSERT INTO job_seeker_skill (job_seeker_id, skill_id, proficiency)
+        VALUES (%s, %s, 1);
+        """
+
+        skill_id = int(request.form.get("add-skill"))
+
+        with db.connect() as conn, conn.cursor() as cursor:
+            cursor.execute(query, (current_user.id, skill_id))
+            conn.commit()
+    except:
+        flash("Oops, there was an error adding your skill. Try again.")
+    
+    return redirect(url_for(".skills_page"))
