@@ -3,11 +3,16 @@ from flask import Flask
 from flaskext.mysql import MySQL
 from flask_login import LoginManager
 
+import logging
+
 db = MySQL()
 
 
 def create_app():
     app = Flask(__name__)
+
+    logging.basicConfig(level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+
     app.config["MYSQL_DATABASE_USER"] = "root"
     app.config["MYSQL_DATABASE_PASSWORD"] = "root"
     app.config["MYSQL_DATABASE_DB"] = "test_db"

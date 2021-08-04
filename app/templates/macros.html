@@ -136,12 +136,28 @@
             <td>
                 <div class="select" name="{{ skill[0] }}">
                     <select>
-                        <option>Proficiency</option>
+                        {% if skill[2] == 1 %}
+                        <option selected>Basic</option>
+                        {% else %}
                         <option>Basic</option>
+                        {% endif %}
+
+                        {% if skill[2] == 2%}
+                        <option selected>Working</option>
+                        {% else %}
                         <option>Working</option>
+                        {% endif %}
+
+                        {% if skill[2] == 3 %}
+                        <option selected>Advanced</option>
+                        {% else %}
                         <option>Advanced</option>
+                        {% endif %}
                     </select>
                 </div>
+            </td>
+            <td>
+                <button class="delete is-medium" onclick="deleteSkill({{ skill[0] }})"></button>
             </td>
         </tr>
         {% endfor %}

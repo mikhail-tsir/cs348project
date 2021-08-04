@@ -1,8 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, current_app, jsonify, render_template
+from flask.wrappers import Response
 from flask_login import current_user
 
 from app.decorators import jobseeker_login_required
 from app import db
+
+import logging
 
 jobseeker = Blueprint("jobseeker", __name__)
 
@@ -43,7 +46,6 @@ def display_job_dicts(jobseeker_id):
         # id, jname, description, company.name, relevance_score
         result = cursor.fetchall()
 
-
         job_dicts = []
 
         for row in result:
@@ -82,16 +84,13 @@ def homepage():
         fname=current_user.user.fname,
         lname=current_user.user.lname,
         job_previews=job_dicts,
-        skills=get_skills(current_user.id)
+        skills=get_skills(current_user.id),
     )
 
 
 def render_jobseeker_page(filename, **kwargs):
     return render_template(
-        filename,
-        fname=current_user.user.fname,
-        lname=current_user.user.lname,
-        **kwargs
+        filename, fname=current_user.user.fname, lname=current_user.user.lname, **kwargs
     )
 
 
@@ -113,3 +112,20 @@ def skills_page():
         result = cursor.fetchall()
 
         return render_jobseeker_page("skills.html", skills=result)
+
+
+@jobseeker.route("/delete_skill/<int:skill_id>", methods=["DELETE"])
+@jobseeker_login_required
+def delete_skill(skill_id):
+    query = """DELETE FROM job_seeker_skill
+    WHERE skill_id = %s
+    AND job_seeker_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM job_seeker_skill WHERE skill_id = %s AND job_seeker_id = %s", (skill_id, current_user.id))
+        result = cursor.fetchall()
+        current_app.logger.info(result)
+        cursor.execute(query, (skill_id, current_user.id))
+        conn.commit()
+        return jsonify(success=True)
