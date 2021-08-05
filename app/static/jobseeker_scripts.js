@@ -26,3 +26,15 @@ function changeProficiency(skillId, proficiency) {
         }
     });
 }
+
+// Event listener for file upload (display filename and submit form)
+document.addEventListener('DOMContentLoaded', () => {
+    let fileInputs = document.querySelectorAll('.file.has-name');
+    for (let fileInput of fileInputs) {
+      let input = fileInput.querySelector('.file-input');
+      input.addEventListener('change', () => {
+        // Submit the form to upload resume right away
+        document.getElementById('upload-resume').submit();
+      });
+    }
+  });
