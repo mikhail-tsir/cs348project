@@ -31,7 +31,7 @@ from app.util.resume_file_util import (
 jobseeker = Blueprint("jobseeker", __name__)
 
 
-def get_skills(jobseeker_id):
+def get_jobseeker_skills(jobseeker_id):
     query = """SELECT skill.sname, proficiency
     FROM job_seeker_skill
     INNER JOIN skill
@@ -43,6 +43,19 @@ def get_skills(jobseeker_id):
         cursor.execute(query, (jobseeker_id,))
 
         return {pair[0]: pair[1] for pair in cursor.fetchall()}
+
+
+def get_job_skills(job_id, cursor):
+    skills_query = """
+    SELECT skill.sname, job_skill_requirements.min_proficiency
+    FROM job_skill_requirements
+    INNER JOIN skill
+    ON job_skill_requirements.skill_id = skill.id
+    AND job_skill_requirements.job_id = %s;
+    """
+
+    cursor.execute(skills_query, job_id)
+    return {pair[0]: pair[1] for pair in cursor.fetchall()}
 
 
 def display_job_dicts(jobseeker_id):
@@ -71,17 +84,7 @@ def display_job_dicts(jobseeker_id):
 
         for row in result:
             job_id = row[0]
-            skills_query = """
-            SELECT skill.sname, job_skill_requirements.min_proficiency
-            FROM job_skill_requirements
-            INNER JOIN skill
-            ON job_skill_requirements.skill_id = skill.id
-            AND job_skill_requirements.job_id = %s;
-            """
-
-            cursor.execute(skills_query, (job_id,))
-            skills_dict = {pair[0]: pair[1] for pair in cursor.fetchall()}
-
+            skills_dict = get_job_skills(job_id, cursor)
             job_dicts.append(
                 {   
                     "id": job_id,
@@ -106,7 +109,7 @@ def homepage():
         fname=current_user.user.fname,
         lname=current_user.user.lname,
         job_previews=job_dicts,
-        skills=get_skills(current_user.id),
+        skills=get_jobseeker_skills(current_user.id),
     )
 
 
@@ -119,7 +122,82 @@ def render_jobseeker_page(filename, **kwargs):
 @jobseeker.route("/job/<int:job_id>")
 @jobseeker_login_required
 def view_job(job_id):
-    return render_jobseeker_page("job-details.html")
+    exists_query = """SELECT 1 FROM application
+    WHERE job_seeker_id = %s
+    AND job_id = %s;
+    """
+
+    job_data_query = """SELECT jname, company.name, company.id, job.description, apply_deadline
+    FROM job
+    INNER JOIN company
+    ON job.company_id = company.id
+    WHERE job.id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(exists_query, (current_user.id, job_id))
+        result = cursor.fetchall()
+        already_applied = len(result) > 0
+
+        skills_dict = get_job_skills(job_id, cursor)
+        cursor.execute(job_data_query, job_id)
+        result = cursor.fetchall()[0]
+        
+        return render_jobseeker_page(
+            "job-details.html",
+            job_id=job_id,
+            job_title=result[0],
+            company_name=result[1],
+            company_id=result[2],
+            job_location="Ottawa, ON",  # TODO add location column
+            job_description=result[3],
+            app_deadline=result[4],
+            applied=already_applied,
+            skills=skills_dict,
+        )
+
+
+@jobseeker.route("/apply/<int:job_id>", methods=["POST"])
+@jobseeker_login_required
+def apply(job_id):
+    query = """INSERT INTO application (job_seeker_id, job_id)
+    VALUES (%s, %s);
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        try:
+            cursor.execute(query, (current_user.id, job_id))
+            conn.commit()
+            flash("Thank you for submitting your application!", "info")
+        except:
+            flash("There was an issue submitting your application.")
+        
+        return redirect(url_for('.view_job', job_id=job_id))
+
+
+@jobseeker.route("/withdraw/<int:job_id>", methods=["POST"])
+@jobseeker_login_required
+def withdraw(job_id):
+    query = """DELETE FROM application
+    WHERE job_seeker_id = %s
+    AND job_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        try:
+            cursor.execute(query, (current_user.id, job_id))
+            cursor.execute("SELECT ROW_COUNT();")
+            conn.commit()
+            result = cursor.fetchall()[0]
+            if result[0] == 0:
+                flash("You have not applied to this job.")
+            else:
+                flash("Successfully withdrawn application", "info")
+        except Exception as e:
+            current_app.logger.info(e)
+            flash("Something went wrong trying to withdraw your application.")
+
+        return redirect(url_for('.view_job', job_id=job_id))
 
 
 @jobseeker.route("/skills")

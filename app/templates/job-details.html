@@ -1,17 +1,28 @@
+{% from "macros.html" import skill_tag %}
+
 {% extends "jobseeker-base.html" %}
 {% block jobseeker_body %}
-<div class="testbox">
-    <form action="/">
-        <div class="banner">
-            <h1>Position Details</h1>
-        </div>
-        <p class="info">Company: </p>
-        <p class="info">Position: </p>
-        <p class="info">Description: </p>
-        <p class="info">Required Skills: </p>
-        <p class="info">Application Deadline: </p>
+<div class="content">
+    {% if applied %}
+    <form action="{{ url_for('.withdraw', job_id=job_id) }}" method="post">
+    {% else %}
+    <form action="{{ url_for('.apply', job_id=job_id) }}" method="post">
+    {% endif %}
+        <h2 class="title">{{ job_title }}</h1>
+        <h3 class="title">Company: </h3> {{ company_name }}
+        <h3 class="info">Location: </h3> {{ job_location }}
+        <h3 class="info">Description: </h3> {{ job_description }}
+        <h3 class="info">Required Skills: </h3>
+        {% for skill, proficiency in skills.items() %}
+        {{ skill_tag(skill, proficiency, colour=True) }}
+        {% endfor %}
+        <h3 class="info">Application Deadline: </h3> {{ app_deadline }}
         <div class="btn-block">
-            <button type="submit" href="/">Apply For The Job</button>
+            {% if applied %}
+            <input class="button" id="withdraw-btn" type="submit" value="Withdraw Application">
+            {% else %}
+            <input class="button" id="apply-btn" type="submit" value="Apply">
+            {% endif %}
         </div>
     </form>
 </div>

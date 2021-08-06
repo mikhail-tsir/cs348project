@@ -31,10 +31,22 @@ function changeProficiency(skillId, proficiency) {
 document.addEventListener('DOMContentLoaded', () => {
     let fileInputs = document.querySelectorAll('.file.has-name');
     for (let fileInput of fileInputs) {
-      let input = fileInput.querySelector('.file-input');
-      input.addEventListener('change', () => {
-        // Submit the form to upload resume right away
-        document.getElementById('upload-resume').submit();
-      });
+        let input = fileInput.querySelector('.file-input');
+        input.addEventListener('change', () => {
+            // Submit the form to upload resume right away
+            document.getElementById('upload-resume').submit();
+        });
     }
-  });
+});
+
+
+// function applyJob(jobId) {
+//     $.ajax({
+//         url: `/jobseeker/apply/${jobId}`,
+//         method: "POST",
+//         success: function () {
+//             console.log("SUCCESS");
+//             document.getElementById("apply-btn").value = "Withdraw Application";
+//         }
+//     });
+// }
