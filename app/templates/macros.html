@@ -102,11 +102,11 @@
 {%- endmacro %}
 
 
-{% macro job_preview(title, company, location, description, min_skill_proficiencies) %}
+{% macro job_preview(job_id, title, company, location, description, min_skill_proficiencies) %}
 <div class="card is-fullwidth">
     <div class="card-header">
         <p class="card-header-title">
-            <a href="#">{{ title }}</a>
+            <a href="{{ url_for('.view_job', job_id=job_id) }}">{{ title }}</a>
         </p>
     </div>
     <div class="card-content">

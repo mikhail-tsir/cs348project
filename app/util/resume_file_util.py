@@ -43,9 +43,9 @@ def upload_file(filename):
         # insert resume as blob in db
         with db.connect() as conn, conn.cursor() as cursor:
             query = """UPDATE job_seeker
-                    SET cv = %s
-                    WHERE id = %s;
-                    """
+            SET cv = %s
+            WHERE id = %s;
+            """
 
             try:
                 cursor.execute(query, (blob, current_user.id))

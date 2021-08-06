@@ -20,7 +20,12 @@ from werkzeug.utils import secure_filename
 
 from app.decorators import jobseeker_login_required
 from app import db
-from app.util.resume_file_util import has_resume, get_resume_filename, allowed_file, upload_file
+from app.util.resume_file_util import (
+    has_resume,
+    get_resume_filename,
+    allowed_file,
+    upload_file,
+)
 
 
 jobseeker = Blueprint("jobseeker", __name__)
@@ -78,7 +83,8 @@ def display_job_dicts(jobseeker_id):
             skills_dict = {pair[0]: pair[1] for pair in cursor.fetchall()}
 
             job_dicts.append(
-                {
+                {   
+                    "id": job_id,
                     "title": row[1],
                     "company": row[3],
                     "location": "Ottawa, ON",
@@ -108,6 +114,12 @@ def render_jobseeker_page(filename, **kwargs):
     return render_template(
         filename, fname=current_user.user.fname, lname=current_user.user.lname, **kwargs
     )
+
+
+@jobseeker.route("/job/<int:job_id>")
+@jobseeker_login_required
+def view_job(job_id):
+    return render_jobseeker_page("job-details.html")
 
 
 @jobseeker.route("/skills")
@@ -233,7 +245,7 @@ def upload_resume():
 @jobseeker_login_required
 def download_resume():
     query = """SELECT cv FROM job_seeker WHERE id = %s;"""
-    
+
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(query, (current_user.id))
         result = cursor.fetchone()
@@ -243,7 +255,7 @@ def download_resume():
             # file does not exist
             return redirect(url_for(".skills_page")), 404
 
-        with tempfile.NamedTemporaryFile() as f, open(f.name, 'wb') as temp_file:
+        with tempfile.NamedTemporaryFile() as f, open(f.name, "wb") as temp_file:
             temp_file.write(file_bytes)
             filename = get_resume_filename()
             return send_file(f.name, as_attachment=True, attachment_filename=filename)
