@@ -1,0 +1,13 @@
+{% from "macros.html" import job_preview %}
+
+{% extends "jobseeker-base.html" %}
+
+{% block jobseeker_body %}
+<div class="content">
+    <h1>My Applications</h1>
+    {% for data in job_previews %}
+    {{ job_preview(data["id"], data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"]) }}
+    <br>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -58,7 +58,27 @@ def get_job_skills(job_id, cursor):
     return {pair[0]: pair[1] for pair in cursor.fetchall()}
 
 
-def display_job_dicts(jobseeker_id):
+def display_job_dicts(data, cursor):
+    job_dicts = []
+
+    for row in data:
+        job_id = row[0]
+        skills_dict = get_job_skills(job_id, cursor)
+        job_dicts.append(
+            {   
+                "id": job_id,
+                "title": row[1],
+                "company": row[3],
+                "location": "Ottawa, ON",
+                "description": row[2],
+                "min_skill_proficiencies": skills_dict,
+            }
+        )
+
+    return job_dicts
+
+
+def get_recommended_jobs():
     # TODO get rid of limit and paginate results
     query = """SELECT temp.id, temp.jname, temp.description, company.name, temp.score
     FROM (
@@ -75,47 +95,49 @@ def display_job_dicts(jobseeker_id):
     LIMIT 10;"""
 
     with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, (jobseeker_id,))
-
-        # id, jname, description, company.name, relevance_score
-        result = cursor.fetchall()
-
-        job_dicts = []
-
-        for row in result:
-            job_id = row[0]
-            skills_dict = get_job_skills(job_id, cursor)
-            job_dicts.append(
-                {   
-                    "id": job_id,
-                    "title": row[1],
-                    "company": row[3],
-                    "location": "Ottawa, ON",
-                    "description": row[2],
-                    "relevance": row[4],
-                    "min_skill_proficiencies": skills_dict,
-                }
-            )
-
-        return job_dicts
+        cursor.execute(query, current_user.id)
+        return display_job_dicts(cursor.fetchall(), cursor)
 
 
-@jobseeker.route("/homepage")
-@jobseeker_login_required
-def homepage():
-    job_dicts = display_job_dicts(current_user.id)
-    return render_template(
-        "jobseeker-homepage.html",
-        fname=current_user.user.fname,
-        lname=current_user.user.lname,
-        job_previews=job_dicts,
-        skills=get_jobseeker_skills(current_user.id),
-    )
+def get_applications():
+    query = """SELECT job.id, job.jname, job.description, company.name
+    FROM job
+    INNER JOIN application
+    ON job.id = application.job_id
+    INNER JOIN company
+    ON company.id = job.company_id
+    WHERE application.job_seeker_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, current_user.id)
+        return display_job_dicts(cursor.fetchall(), cursor)
 
 
 def render_jobseeker_page(filename, **kwargs):
     return render_template(
         filename, fname=current_user.user.fname, lname=current_user.user.lname, **kwargs
+    )
+
+
+@jobseeker.route("/homepage")
+@jobseeker_login_required
+def homepage():
+    job_dicts = get_recommended_jobs()
+    return render_jobseeker_page(
+        "jobseeker-homepage.html",
+        job_previews=job_dicts,
+        skills=get_jobseeker_skills(current_user.id),
+    )
+
+
+@jobseeker.route("/applications")
+@jobseeker_login_required
+def applications():
+    job_dicts = get_applications()
+    return render_jobseeker_page(
+        "my-applications.html",
+        job_previews=job_dicts
     )
 
 
