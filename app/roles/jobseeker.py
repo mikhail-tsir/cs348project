@@ -1,4 +1,3 @@
-from operator import ge
 import os
 import logging
 import tempfile
@@ -26,98 +25,15 @@ from app.util.resume_file_util import (
     allowed_file,
     upload_file,
 )
+from app.util.job_util import (
+    get_applications,
+    get_job_skills,
+    get_recommended_jobs,
+)
+from app.util.jobseeker_util import get_jobseeker_skills, render_jobseeker_page
 
 
 jobseeker = Blueprint("jobseeker", __name__)
-
-
-def get_jobseeker_skills(jobseeker_id):
-    query = """SELECT skill.sname, proficiency
-    FROM job_seeker_skill
-    INNER JOIN skill
-    ON skill_id = id
-    AND job_seeker_id = %s;
-    """
-
-    with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, (jobseeker_id,))
-
-        return {pair[0]: pair[1] for pair in cursor.fetchall()}
-
-
-def get_job_skills(job_id, cursor):
-    skills_query = """
-    SELECT skill.sname, job_skill_requirements.min_proficiency
-    FROM job_skill_requirements
-    INNER JOIN skill
-    ON job_skill_requirements.skill_id = skill.id
-    AND job_skill_requirements.job_id = %s;
-    """
-
-    cursor.execute(skills_query, job_id)
-    return {pair[0]: pair[1] for pair in cursor.fetchall()}
-
-
-def display_job_dicts(data, cursor):
-    job_dicts = []
-
-    for row in data:
-        job_id = row[0]
-        skills_dict = get_job_skills(job_id, cursor)
-        job_dicts.append(
-            {   
-                "id": job_id,
-                "title": row[1],
-                "company": row[3],
-                "location": "Ottawa, ON",
-                "description": row[2],
-                "min_skill_proficiencies": skills_dict,
-            }
-        )
-
-    return job_dicts
-
-
-def get_recommended_jobs():
-    # TODO get rid of limit and paginate results
-    query = """SELECT temp.id, temp.jname, temp.description, company.name, temp.score
-    FROM (
-        SELECT job.*, relevance.score
-        FROM relevance
-        INNER JOIN job
-        ON relevance.job_id = job.id
-        AND relevance.job_seeker_id = %s
-        AND job.apply_deadline <= CURRENT_TIMESTAMP
-    ) AS temp
-    INNER JOIN company
-        ON company.id = temp.company_id
-    ORDER BY score DESC
-    LIMIT 10;"""
-
-    with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, current_user.id)
-        return display_job_dicts(cursor.fetchall(), cursor)
-
-
-def get_applications():
-    query = """SELECT job.id, job.jname, job.description, company.name
-    FROM job
-    INNER JOIN application
-    ON job.id = application.job_id
-    INNER JOIN company
-    ON company.id = job.company_id
-    WHERE application.job_seeker_id = %s;
-    """
-
-    with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, current_user.id)
-        return display_job_dicts(cursor.fetchall(), cursor)
-
-
-def render_jobseeker_page(filename, **kwargs):
-    return render_template(
-        filename, fname=current_user.user.fname, lname=current_user.user.lname, **kwargs
-    )
 
 
 @jobseeker.route("/homepage")
@@ -135,10 +51,7 @@ def homepage():
 @jobseeker_login_required
 def applications():
     job_dicts = get_applications()
-    return render_jobseeker_page(
-        "my-applications.html",
-        job_previews=job_dicts
-    )
+    return render_jobseeker_page("my-applications.html", job_previews=job_dicts)
 
 
 @jobseeker.route("/job/<int:job_id>")
@@ -164,7 +77,7 @@ def view_job(job_id):
         skills_dict = get_job_skills(job_id, cursor)
         cursor.execute(job_data_query, job_id)
         result = cursor.fetchall()[0]
-        
+
         return render_jobseeker_page(
             "job-details.html",
             job_id=job_id,
@@ -193,8 +106,8 @@ def apply(job_id):
             flash("Thank you for submitting your application!", "info")
         except:
             flash("There was an issue submitting your application.")
-        
-        return redirect(url_for('.view_job', job_id=job_id))
+
+        return redirect(url_for(".view_job", job_id=job_id))
 
 
 @jobseeker.route("/withdraw/<int:job_id>", methods=["POST"])
@@ -219,7 +132,7 @@ def withdraw(job_id):
             current_app.logger.info(e)
             flash("Something went wrong trying to withdraw your application.")
 
-        return redirect(url_for('.view_job', job_id=job_id))
+        return redirect(url_for(".view_job", job_id=job_id))
 
 
 @jobseeker.route("/skills")
@@ -271,9 +184,6 @@ def delete_skill(skill_id):
     """
 
     with db.connect() as conn, conn.cursor() as cursor:
-        # cursor.execute("SELECT * FROM job_seeker_skill WHERE skill_id = %s AND job_seeker_id = %s", (skill_id, current_user.id))
-        # result = cursor.fetchall()
-        # current_app.logger.info(result)
         cursor.execute(query, (skill_id, current_user.id))
         conn.commit()
         return jsonify(success=True)

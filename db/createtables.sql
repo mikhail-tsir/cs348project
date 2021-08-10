@@ -28,6 +28,7 @@ CREATE TABLE job (
   company_id INT NOT NULL,
   description TEXT NOT NULL,
   apply_deadline TIMESTAMP NOT NULL,
+  location VARCHAR(255) NOT NULL,
   FOREIGN KEY (company_id) REFERENCES company(id)
 );
 
