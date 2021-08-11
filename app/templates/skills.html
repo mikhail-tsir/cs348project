@@ -4,7 +4,7 @@
 <div class="columns is-centered">
     <div class="column">
         <!-- TODO make UI nicer (less white space) -->
-        <form class="form" method="post" id="skills-form" action="{{ url_for('.add_skill') }}">
+        <form class="form" method="post" id="skills-form" action="{{ url_for('jobseeker.add_skill') }}">
             <table class="table">
                 <caption>
                     <h1 class="title">My Skills</h1>
@@ -70,7 +70,7 @@
         </form>
     </div>
     <div class="column has-text-center is-narrow">
-        <form class="form" id="upload-resume" method="post" enctype="multipart/form-data" action="{{ url_for('.upload_resume') }}">
+        <form class="form" id="upload-resume" method="post" enctype="multipart/form-data" action="{{ url_for('jobseeker.upload_resume') }}">
             <div class="field">
                 <h1 class="title">My Resume</h1>
                 <div class="field-body">
@@ -86,7 +86,7 @@
                                 </span>
                             </span>
                             {% if resume_filename %}
-                            <a href="{{ url_for('.download_resume') }}">
+                            <a href="{{ url_for('jobseeker.download_resume') }}">
                                 <span class="file-name">
                                     {{ resume_filename }}
                                 </span>

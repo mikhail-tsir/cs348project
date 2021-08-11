@@ -1,0 +1,17 @@
+{% extends "company-base.html" %}
+
+{% block company_body %}
+<div class="content">
+    <form method="post" action="{{ url_for('company.about_post') }}">
+        <h2 class="info">My Description:</h2>
+        <br>
+        <textarea name="description">
+            {{ description }}
+        </textarea>
+
+        <div class="btn-block">
+            <input class="button" type="submit" value="Update Description">
+        </div>
+    </form>
+</div>
+{% endblock %}

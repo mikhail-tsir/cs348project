@@ -26,6 +26,7 @@ def display_job_dicts(data, cursor):
                 "id": job_id,
                 "title": row[1],
                 "company": row[3],
+                "company_id": row[4],
                 "location": "Ottawa, ON",
                 "description": row[2],
                 "min_skill_proficiencies": skills_dict,
@@ -37,7 +38,7 @@ def display_job_dicts(data, cursor):
 
 def get_recommended_jobs():
     # TODO get rid of limit and paginate results
-    query = """SELECT temp.id, temp.jname, temp.description, company.name, temp.score
+    query = """SELECT temp.id, temp.jname, temp.description, company.name, company.id, temp.score
     FROM (
         SELECT job.*, relevance.score
         FROM relevance
@@ -57,7 +58,7 @@ def get_recommended_jobs():
 
 
 def get_applications():
-    query = """SELECT job.id, job.jname, job.description, company.name
+    query = """SELECT job.id, job.jname, job.description, company.name, company.id
     FROM job
     INNER JOIN application
     ON job.id = application.job_id
@@ -68,4 +69,25 @@ def get_applications():
 
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(query, current_user.id)
+        return display_job_dicts(cursor.fetchall(), cursor)
+
+
+def get_jobs_by_company(company_id):
+    # TODO get rid of limit and paginate results
+    query = """SELECT temp.id, temp.jname, temp.description, company.name, company.id, temp.score
+    FROM (
+        SELECT job.*, relevance.score
+        FROM relevance
+        INNER JOIN job
+        ON relevance.job_id = job.id
+        AND relevance.job_seeker_id = %s
+        AND job.apply_deadline <= CURRENT_TIMESTAMP
+    ) AS temp
+    INNER JOIN company
+        ON company.id = %s
+    ORDER BY score DESC
+    LIMIT 10;"""
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, (current_user.id, company_id))
         return display_job_dicts(cursor.fetchall(), cursor)

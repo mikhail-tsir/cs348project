@@ -6,7 +6,6 @@ base = Blueprint("base", __name__)
 
 @base.route("/")
 def index():
-    # for henry: comment this out
     return render_template("index.html")
 
 

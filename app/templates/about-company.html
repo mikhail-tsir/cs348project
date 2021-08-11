@@ -1,0 +1,16 @@
+{% extends "jobseeker-base.html" %}
+{% block jobseeker_body %}
+<div class="content">
+    <div class="card">
+        <div class="card-content">
+            <p class="title">{{ company_name }}</p>
+            <p class="subtitle">
+                <a href="{{ url_for('company.jobs', company_id=company_id) }}">View Job Postings</a>
+            </p>
+            <div class="content">
+                {{ description }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

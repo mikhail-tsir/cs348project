@@ -3,28 +3,24 @@
 {% extends "base.html" %}
 {% block body %}
 <body>
-  <script src="{{ url_for('static', filename='jobseeker_scripts.js') }}"></script>
+  <script src="{{ url_for('static', filename='company_scripts.js') }}"></script>
   <section class="section is-primary is-fullheight is-8">
     <div class="columns is-centered">
       <div class="column is-8">
         <nav class="navbar is-8" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
             <div class="navbar-item">
-              <h1>Welcome, <b>{{ fname }}!</b></h1>
+              <h1><b>{{ company_name }}!</b></h1>
             </div>
           </div>
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <a class="navbar-item" href="{{ url_for('jobseeker.homepage') }}">
+              <a class="navbar-item" href="{{ url_for('company.homepage') }}">
                 View Postings
               </a>
 
-              <a class="navbar-item" href="{{ url_for('jobseeker.applications') }}">
-                My applications
-              </a>
-
-              <a class="navbar-item" href="{{ url_for('jobseeker.skills_page') }}">
-                My skills
+              <a class="navbar-item" href="{{ url_for('company.about_page') }}">
+                About
               </a>
             </div>
             <div class="navbar-end">
@@ -35,7 +31,7 @@
         </nav>
         <br>
         {{ flashing() }}
-        {% block jobseeker_body %}
+        {% block company_body %}
         {% endblock %}
       </div>
     </div>

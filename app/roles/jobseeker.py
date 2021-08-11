@@ -1,5 +1,4 @@
 import os
-import logging
 import tempfile
 
 from flask import (
@@ -8,12 +7,10 @@ from flask import (
     flash,
     jsonify,
     redirect,
-    render_template,
     request,
     send_file,
     url_for,
 )
-from flask.wrappers import Response
 from flask_login import current_user
 from werkzeug.utils import secure_filename
 
@@ -31,6 +28,7 @@ from app.util.job_util import (
     get_recommended_jobs,
 )
 from app.util.jobseeker_util import get_jobseeker_skills, render_jobseeker_page
+from app.util.company_util import get_company_description
 
 
 jobseeker = Blueprint("jobseeker", __name__)
@@ -51,7 +49,9 @@ def homepage():
 @jobseeker_login_required
 def applications():
     job_dicts = get_applications()
-    return render_jobseeker_page("my-applications.html", job_previews=job_dicts)
+    return render_jobseeker_page(
+        "job-previews.html", title="My Applications", job_previews=job_dicts
+    )
 
 
 @jobseeker.route("/job/<int:job_id>")
@@ -107,7 +107,7 @@ def apply(job_id):
         except:
             flash("There was an issue submitting your application.")
 
-        return redirect(url_for(".view_job", job_id=job_id))
+        return redirect(url_for("jobseeker.view_job", job_id=job_id))
 
 
 @jobseeker.route("/withdraw/<int:job_id>", methods=["POST"])
@@ -132,7 +132,7 @@ def withdraw(job_id):
             current_app.logger.info(e)
             flash("Something went wrong trying to withdraw your application.")
 
-        return redirect(url_for(".view_job", job_id=job_id))
+        return redirect(url_for("jobseeker.view_job", job_id=job_id))
 
 
 @jobseeker.route("/skills")
@@ -222,7 +222,7 @@ def add_skill():
     except:
         flash("Oops, there was an error adding your skill. Try again.")
 
-    return redirect(url_for(".skills_page"))
+    return redirect(url_for("jobseeker.skills_page"))
 
 
 @jobseeker.route("/upload_resume", methods=["POST"])
@@ -238,7 +238,7 @@ def upload_resume():
     if not resume or not resume.filename:
         flash("Oops, there doesn't seem to be a file there.")
         current_app.logger.info("Either file or filename is None")
-        return redirect(url_for(".skills_page"))
+        return redirect(url_for("jobseeker.skills_page"))
 
     if allowed_file(resume.filename):
         filename = secure_filename(resume.filename)
@@ -248,7 +248,7 @@ def upload_resume():
     else:
         flash("This file type is not allowed. We only support .pdf files.")
 
-    return redirect(url_for(".skills_page"))
+    return redirect(url_for("jobseeker.skills_page"))
 
 
 @jobseeker.route("/download_resume")
@@ -263,9 +263,21 @@ def download_resume():
 
         if not file_bytes:
             # file does not exist
-            return redirect(url_for(".skills_page")), 404
+            return redirect(url_for("jobseeker.skills_page")), 404
 
         with tempfile.NamedTemporaryFile() as f, open(f.name, "wb") as temp_file:
             temp_file.write(file_bytes)
             filename = get_resume_filename()
             return send_file(f.name, as_attachment=True, attachment_filename=filename)
+
+
+@jobseeker.route("/company/<int:company_id>")
+@jobseeker_login_required
+def company(company_id):
+    name, description = get_company_description(company_id)
+    return render_jobseeker_page(
+        "about-company.html",
+        company_name=name,
+        description=description,
+        company_id=company_id
+    )

@@ -4,7 +4,7 @@
         <p>
             <b>Email Address<span class="required">*</span></b>
         </p>
-        <input type="text" placeholder="mtsirlin@uwaterloo.ca" name="email" />
+        <input type="text" placeholder="email@example.ca" name="email" />
     </div>
 </div>
 {%- endmacro %}
@@ -71,6 +71,17 @@
 </div>
 {%- endmacro %}
 
+{% macro description_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Description</b>
+        </p>
+        <textarea name="description"></textarea>
+    </div>
+</div>
+{%- endmacro %}
+
 
 {% macro flashing() %}
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -110,18 +121,20 @@
 {%- endmacro %}
 
 
-{% macro job_preview(job_id, title, company, location, description, min_skill_proficiencies) %}
+{% macro job_preview(job_id, title, company, location, description, min_skill_proficiencies, company_id, is_owner=false) %}
 <div class="card is-fullwidth">
     <div class="card-header">
         <p class="card-header-title">
             <a href="{{ url_for('.view_job', job_id=job_id) }}">{{ title }}</a>
         </p>
     </div>
+    {% if not is_owner %}
     <div class="card-content">
         <p>
-            {{ company }} - {{ location }}
+            <a href="{{ url_for('jobseeker.company', company_id=company_id) }}">{{ company }}</a> - {{ location }}
         </p>
     </div>
+    {% endif %}
     <div class="card-content">
         {{ description }}
     </div>

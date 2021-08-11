@@ -4,12 +4,12 @@
 {% block jobseeker_body %}
 <div class="content">
     {% if applied %}
-    <form action="{{ url_for('.withdraw', job_id=job_id) }}" method="post">
+    <form action="{{ url_for('jobseeker.withdraw', job_id=job_id) }}" method="post">
     {% else %}
-    <form action="{{ url_for('.apply', job_id=job_id) }}" method="post">
+    <form action="{{ url_for('jobseeker.apply', job_id=job_id) }}" method="post">
     {% endif %}
         <h2 class="title">{{ job_title }}</h1>
-        <h3 class="title">Company: </h3> {{ company_name }}
+        <h3 class="title">Company: </h3> <a href="{{ url_for('company.jobs', company_id=company_id) }}">{{ company_name }}</a>
         <h3 class="info">Location: </h3> {{ job_location }}
         <h3 class="info">Description: </h3> {{ job_description }}
         <h3 class="info">Required Skills: </h3>

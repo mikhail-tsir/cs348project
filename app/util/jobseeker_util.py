@@ -1,6 +1,8 @@
 from flask import render_template
 from flask_login import current_user
 
+from app import db
+
 
 def get_jobseeker_skills(jobseeker_id):
     query = """SELECT skill.sname, proficiency

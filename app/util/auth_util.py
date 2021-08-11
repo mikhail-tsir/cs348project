@@ -94,9 +94,9 @@ def insert_new_user(user_type, cursor):
     cursor.execute(
         """
         INSERT INTO company (name, description, id)
-        VALUES (%s, 'Sample description', %s);
+        VALUES (%s, %s, %s);
         """,
-        (request.form["name"], account_id),
+        (request.form["name"], request.form["description"], account_id),
     )
 
 
