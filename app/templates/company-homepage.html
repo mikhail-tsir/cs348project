@@ -1,10 +1,19 @@
+{% from "macros.html" import job_preview %}
+
 {% extends "company-base.html" %}
 
 {% block company_body %}
 <div class="content">
-    <h1>My Postings</h1>
+    <div class="columns">
+        <div class="column is-narrow">
+            <h1>My Postings</h1>
+        </div>
+        <div class="column is-3">
+            <a class="button is-info" href="{{ url_for('company.add_job') }}">Add Job</a>
+        </div>
+    </div>
     {% for data in job_previews %}
-    {{ job_preview(data["id"], data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"], data["company_id"], is_company=true) }}
+    {{ job_preview(data["id"], data["title"], data["company"], data["location"], data["description"], data["min_skill_proficiencies"], data["company_id"], is_owner=true) }}
     <br>
     {% endfor %}
 </div>

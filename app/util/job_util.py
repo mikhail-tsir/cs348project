@@ -74,20 +74,14 @@ def get_applications():
 
 def get_jobs_by_company(company_id):
     # TODO get rid of limit and paginate results
-    query = """SELECT temp.id, temp.jname, temp.description, company.name, company.id, temp.score
-    FROM (
-        SELECT job.*, relevance.score
-        FROM relevance
-        INNER JOIN job
-        ON relevance.job_id = job.id
-        AND relevance.job_seeker_id = %s
-        AND job.apply_deadline <= CURRENT_TIMESTAMP
-    ) AS temp
+    query = """SELECT job.id, job.jname, job.description, company.name, company.id
+    FROM job
     INNER JOIN company
-        ON company.id = %s
-    ORDER BY score DESC
-    LIMIT 10;"""
+    ON job.company_id = company.id
+    WHERE company.id = %s
+    LIMIT 10;
+    """
 
     with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, (current_user.id, company_id))
+        cursor.execute(query, company_id)
         return display_job_dicts(cursor.fetchall(), cursor)

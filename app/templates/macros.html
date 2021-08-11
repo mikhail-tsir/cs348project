@@ -125,12 +125,16 @@
 <div class="card is-fullwidth">
     <div class="card-header">
         <p class="card-header-title">
-            <a href="{{ url_for('.view_job', job_id=job_id) }}">{{ title }}</a>
+            {% if is_owner %}
+            <a href="{{ url_for('company.view_job', job_id=job_id) }}">{{ title }}</a>
+            {% else %}
+            <a href="{{ url_for('jobseeker.view_job', job_id=job_id) }}">{{ title }}</a>
+            {% endif %}
         </p>
     </div>
     {% if not is_owner %}
     <div class="card-content">
-        <p>
+        <pgmail>
             <a href="{{ url_for('jobseeker.company', company_id=company_id) }}">{{ company }}</a> - {{ location }}
         </p>
     </div>

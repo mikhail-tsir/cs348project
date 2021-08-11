@@ -9,6 +9,7 @@ CREATE TABLE company (
   id INT NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT,
+  website VARCHAR(255),
   FOREIGN KEY (id) REFERENCES account(id),
   CONSTRAINT name_unique UNIQUE (name)
 );
