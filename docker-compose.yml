@@ -19,6 +19,8 @@ services:
         volumes:
             - ./db:/docker-entrypoint-initdb.d/:ro
             - db:/var/lib/mysql
+        cap_add:
+            - SYS_NICE
 
     generate_data:
         build: ./generate_data
