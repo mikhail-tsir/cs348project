@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal, TypeAlias
-from functools import reduce
 
 import random
 
@@ -22,6 +21,7 @@ class Account:
 class Company:
     name: str
     description: str
+    website: str
     jobs: list[Job]
 
 @dataclass
@@ -48,6 +48,7 @@ class Job:
     name: str
     description: str
     deadline: datetime
+    location: str
     requirements: list[SkillRequirement]
 
 
@@ -59,49 +60,31 @@ skills: dict[ProgrammerType, set[Skill]] = {
     "embedded": {"C", "C++", "Rust"},
     "mobile": {"Kotlin", "Swift"},
 }
-# all_skills = set(reduce(set[Skill].union, skills.values(), set[Skill]()))
-all_skills = skills["frontend"].union(skills["backend"]).union(skills["embedded"]).union(skills["mobile"])
 
-def generate_job(programmer_type: ProgrammerType) -> Job:
-    relevant_skills = skills[programmer_type]
+all_skills = skills["frontend"] | skills["backend"] | skills["embedded"] | skills["mobile"]
+
+locations = {"Ottawa", "Edmonton", "Victoria", "Winnipeg", "Toronto", "Quebec City", "Montreal", "Waterloo"}
+
+job_names = ["QA Position", "QA Opening", "Junior Developer Position", "Entry level position", "Senior developer (>5 years)", "Senior Developer Position", "Full stack developer opening", "Mobile app dev"]
+job_descriptions = [
+    "Looking for a developer that takes the time to write high quality code", 
+    "We offer an environment for fast growth and high skill variety",
+    "We practice test driven development; we expect employees to write extensive testing.",
+    "Looking for developer who is willing to learn on the job",
+]
+
+def generate_job() -> Job:
+    relevant_skills = list(all_skills)
+    random.shuffle(relevant_skills)
+    requirements = [SkillRequirement(skill, random.choice([1,2,3])) for skill in relevant_skills[:6]]
     deadline = datetime.now() + timedelta(days=random.randrange(0,10), hours=random.randrange(0, 24), minutes=random.randrange(0, 60))
-    match programmer_type:
-        case "frontend":
-            mainSkill = random.choice(list(relevant_skills))
-            otherSkill = random.choice(list(relevant_skills - {mainSkill}))
-            
-            return Job(
-                name=random.choice([f"Frontend developer specializing in {mainSkill}", "Web dev", f"{mainSkill} dev"]),
-                description=f"Looking for a frontend developer who is experienced with {mainSkill} and has familiarity with {otherSkill}",
-                deadline=deadline,
-                requirements=[SkillRequirement(mainSkill, proficiency=3), SkillRequirement(otherSkill, proficiency=1)]
-            )
-        case "backend":
-            mainSkill = random.choice(list(relevant_skills))
-            otherSkill = random.choice(list(relevant_skills - {mainSkill}))
-
-            return Job(
-                name=random.choice([f"Backend developer specializing in {mainSkill}", "Backend dev", f"{mainSkill} dev"]),
-                description=f"Looking for a backend developer who is experienced with {mainSkill} and has familiarity with {otherSkill}",
-                deadline=deadline,
-                requirements=[SkillRequirement(mainSkill, proficiency=3), SkillRequirement(otherSkill, proficiency=1)]
-            )
-        case "embedded":
-            skill = random.choice(list(relevant_skills))
-            return Job(
-                name=random.choice([f"Firmware developer", f"{skill} specialist"]),
-                description=random.choice([f"Looking for a developer who knows their way around {skill}"]),
-                deadline=deadline,
-                requirements=[SkillRequirement(skill, proficiency=3)],
-            )
-        case "mobile":
-            skill = random.choice(list(relevant_skills))
-            return Job(
-                name=random.choice([f"Mobile developer", f"{skill} developer"]),
-                description=random.choice([f"Looking for native {skill} app developer"]),
-                deadline=deadline,
-                requirements=[SkillRequirement(skill, proficiency=3)],
-            )
+    return Job(
+        name=random.choice(job_names),
+        description=random.choice(job_descriptions),
+        deadline=deadline,
+        location=random.choice(list(locations)),
+        requirements=requirements,
+    )
 
 def generate_name() -> str:
     consonants = [*"bcdfghjklmnpqrstvwxyz", "sh", "th", "ch", "gh", "dr", "tw", "zh", "fh"]
@@ -127,7 +110,8 @@ def generate_company() -> Company:
     return Company(
         name=name,
         description=random.choice(["We do things", "Time to make a difference™", "Only the best for our shareholders"]),
-        jobs=[generate_job(programmer_type=random.choice(programmer_types)) for _ in range(random.randrange(1, 8))],
+        website=f"https://www.{name.replace(' ', '-')}.com",
+        jobs=[generate_job() for _ in range(random.randrange(1, 8))],
     )
 
 def generate_phone() -> str:
@@ -138,7 +122,7 @@ def generate_phone() -> str:
 def generate_job_seeker() -> JobSeeker:
     skills = list(all_skills)
     random.shuffle(skills)
-    proficiencies = [Proficiency(skill=skill, proficiency=random.choice([1,2,3])) for skill in skills]
+    proficiencies = [Proficiency(skill=skill, proficiency=random.choice([1,2,3])) for skill in skills[:5]]
     return JobSeeker(first_name=generate_name(), last_name=generate_name(), phone=generate_phone(), proficiencies=proficiencies)
 
 def generate_company_account() -> Account:
@@ -164,10 +148,10 @@ def add_account_to_db(account: Account, /, cursor: pymysql.cursors.Cursor):
     cursor.execute("INSERT INTO account (email, password) VALUES (%s, %s)", (account.email, generate_password_hash(account.password)))
     account_id = cursor.lastrowid
     match account.type:
-        case Company(name, description, jobs):
-            cursor.execute("INSERT INTO company (id, name, description) VALUES (%s, %s, %s)", (account_id, name, description))
+        case Company(name, description, website, jobs):
+            cursor.execute("INSERT INTO company (id, name, website, description) VALUES (%s, %s, %s, %s)", (account_id, name, website, description))
             for job in jobs:
-                cursor.execute("INSERT INTO job (company_id, jname, description, apply_deadline) VALUES (%s, %s, %s, %s)", (account_id, job.name, job.description, job.deadline))
+                cursor.execute("INSERT INTO job (company_id, jname, description, location, apply_deadline) VALUES (%s, %s, %s, %s, %s)", (account_id, job.name, job.description, job.location, job.deadline))
                 job_id = cursor.lastrowid
                 cursor.executemany("INSERT INTO job_skill_requirements VALUES (%s, %s, %s)", ((job_id, skills[requirement.skill], requirement.proficiency) for requirement in job.requirements))
         case JobSeeker(first_name, last_name, phone, proficiencies):
