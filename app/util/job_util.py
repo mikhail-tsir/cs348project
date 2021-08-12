@@ -45,7 +45,7 @@ def get_recommended_jobs():
         INNER JOIN job
         ON relevance.job_id = job.id
         AND relevance.job_seeker_id = %s
-        AND job.apply_deadline <= CURRENT_TIMESTAMP
+        AND job.apply_deadline >= CURRENT_TIMESTAMP
     ) AS temp
     INNER JOIN company
         ON company.id = temp.company_id

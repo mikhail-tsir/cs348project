@@ -165,6 +165,22 @@ def update_job_skills(job_id):
         return jsonify(success=True)
 
 
+@company.route("/add_skill/<int:job_id>")
+@company_login_required
+@authorize_company
+def add_skill(job_id):
+    skill_id = request.args.get("skill_id")
+
+    query = """INSERT INTO job_skill_requirements (job_id, skill_id, min_proficiency)
+    VALUES (%s, %s, 1);
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, (job_id, skill_id))
+        flash("Changes saved")
+        return redirect(url_for("company.view_job"), job_id=job_id)
+
+
 @company.route("/delete_skill/<int:job_id>", methods=["DELETE"])
 @company_login_required
 @authorize_company
