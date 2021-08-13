@@ -58,7 +58,7 @@ def generic_login(user_type):
             return redirect(url_for(".login"))
 
 
-def insert_new_user(user_type, cursor):
+def insert_new_user(user_type, cursor, conn):
     if not validate_form(request, ["email", "password"]):
         flash("Required form fields must not be empty.")
         return redirect(url_for(".signup"))
@@ -74,13 +74,15 @@ def insert_new_user(user_type, cursor):
         (request.form.get("email").lower, hashed_pw),
     )
 
+    conn.commit()
+
     # get id of newly inserted user
     cursor.execute(
         """
         SELECT id FROM account
         WHERE email = %s;
         """,
-        request.form["email"],
+        request.form.get("email").lower,
     )
 
     result = cursor.fetchone()
@@ -108,6 +110,7 @@ def insert_new_user(user_type, cursor):
                 account_id,
             ),
         )
+        conn.commit()
         return
 
     # for company accounts
@@ -122,6 +125,7 @@ def insert_new_user(user_type, cursor):
         """,
         (request.form["name"], request.form["description"], request.form["website"], account_id),
     )
+    conn.commit()
 
 
 def generic_signup(user_type):
@@ -165,7 +169,7 @@ def generic_signup(user_type):
             return redirect(url_for(".signup"))
 
         try:
-            insert_new_user(user_type, cursor)
+            insert_new_user(user_type, cursor, conn)
             conn.commit()
         except MySQLError as e:
             # print(e)
