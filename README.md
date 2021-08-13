@@ -42,6 +42,8 @@ git clone git@github.com:mikhail-tsir/cs348project.git
 * Job seekers can view the (top 10) jobs most relevant to them.
   * If you sign up as a new user and log in as the new user, you will not be able to see postings, because the new user doesn't have any skills. The functionality to add/modify skills is not implemented yet, so you can't really appreciate this feature. To get around this, you can log in as an existing user: Try the email `Avi.Cha@gmail.com` (case sensitive) with the password `"password"`. This use should already have some pre-set skills.
   * This feature is implemented in `app/roles/jobseeker.py`
+ 
+ There are more features that were added since milestone 2, see report and video demo for details.
 
 #### Extra (bonus) features
 * Security: passwords are hashed and salted (see `app/util/auth_util.py`).
@@ -49,3 +51,5 @@ git clone git@github.com:mikhail-tsir/cs348project.git
   * This feature is implemented in `app/decorators.py`
 * A very nice UI.
 * Arguably log in and sign up are 2 different features (they require completely different SQL queries) so we really have 4 core features in addition to these bonus ones :)
+* Multi-user access control (see report and video demo for details)
+* Security features (see report and video demo for details)
