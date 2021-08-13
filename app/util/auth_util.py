@@ -26,7 +26,7 @@ def generic_login(user_type):
         flash("Required form fields must not be empty.")
         return redirect(".login")
     
-    email, password = request.form.get("email").lower, request.form.get("password")
+    email, password = request.form.get("email").lower(), request.form.get("password")
 
     with db.connect() as conn:
         try:
@@ -71,7 +71,7 @@ def insert_new_user(user_type, cursor, conn):
         INSERT INTO account (email, password)
         VALUES (%s, %s);
         """,
-        (request.form.get("email").lower, hashed_pw),
+        (request.form.get("email").lower(), hashed_pw),
     )
 
     conn.commit()
@@ -82,7 +82,7 @@ def insert_new_user(user_type, cursor, conn):
         SELECT id FROM account
         WHERE email = %s;
         """,
-        request.form.get("email").lower,
+        request.form.get("email").lower(),
     )
 
     result = cursor.fetchone()
