@@ -9,6 +9,8 @@ from app.models import Account, JobSeeker, Company
 
 from app.util.form_util import validate_form
 
+import re
+
 
 def create_user_model(user_type: str, attributes: Tuple):
     if user_type == "jobseeker":
@@ -146,11 +148,19 @@ def generic_signup(user_type):
         MIN_PASSWORD_LENGTH = 4
 
         # validate password
-        # TODO better validation
         if len(password) < MIN_PASSWORD_LENGTH:
             flash(
                 f"Password is not secure enough (must be at least {MIN_PASSWORD_LENGTH} characters)."
             )
+            return redirect(url_for(".signup"))
+        
+        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if not re.fullmatch(email_regex, request.form["email"]):
+            flash("Invalid email.")
+            return redirect(url_for(".signup"))
+
+        if not re.fullmatch(r"\d{10}", request.form["phone"]):
+            flash("Invalid phone")
             return redirect(url_for(".signup"))
 
         try:
