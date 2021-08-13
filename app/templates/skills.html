@@ -4,10 +4,8 @@
 <div class="columns is-centered">
     <div class="column">
         <form class="form" method="post" id="skills-form" action="{{ url_for('jobseeker.add_skill') }}">
+            <h1 class="title">My Skills</h1>
             <table class="table">
-                <caption>
-                    <h1 class="title">My Skills</h1>
-                </caption>
                 <tbody>
                     <tr></tr>
                     {% for skill in skills %}
