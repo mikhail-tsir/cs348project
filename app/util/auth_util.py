@@ -91,6 +91,10 @@ def insert_new_user(user_type, cursor):
         if not validate_form(request, ["fname", "lname", "phone"]):
             flash("Required form fields must not be empty.")
             return redirect(url_for(".signup"))
+        
+        if not re.fullmatch(r"\d{10}", request.form["phone"]):
+            flash("Invalid phone")
+            return redirect(url_for(".signup"))
 
         cursor.execute(
             """
@@ -109,7 +113,8 @@ def insert_new_user(user_type, cursor):
     # for company accounts
     if not validate_form(request, ["name", "description", "website"]):
         flash("Required form fields must not be empty.")
-        return Response(status=204)
+        return redirect(url_for(".signup"))
+
     cursor.execute(
         """
         INSERT INTO company (name, description, website, id)
@@ -157,10 +162,6 @@ def generic_signup(user_type):
         email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         if not re.fullmatch(email_regex, request.form["email"]):
             flash("Invalid email.")
-            return redirect(url_for(".signup"))
-
-        if not re.fullmatch(r"\d{10}", request.form["phone"]):
-            flash("Invalid phone")
             return redirect(url_for(".signup"))
 
         try:

@@ -32,8 +32,8 @@ def create_app():
     from app.roles.company import company
 
     app.register_blueprint(base)
-    app.register_blueprint(company_auth, url_prefix="/company")
-    app.register_blueprint(jobseeker_auth, url_prefix="/jobseeker")
+    app.register_blueprint(company_auth, url_prefix="/company_auth")
+    app.register_blueprint(jobseeker_auth, url_prefix="/jobseeker_auth")
     app.register_blueprint(company, url_prefix="/company")
     app.register_blueprint(jobseeker, url_prefix="/jobseeker")
 
