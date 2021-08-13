@@ -36,7 +36,7 @@ def authorize_company(func):
             )
 
             result = cursor.fetchone()
-            if result[0] != current_user.id:
+            if len(result) == 0 or result[0] != current_user.id:
                 return current_app.login_manager.unauthorized()
             return func(*args, **kwargs)
     

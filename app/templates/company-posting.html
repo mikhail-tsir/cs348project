@@ -43,9 +43,7 @@
                     <p>
                         <b>Description<span class="required">*</span></b>
                     </p>
-                    <textarea name="description">
-{{ description }}
-                    </textarea>
+                    <textarea name="description">{{ description }}</textarea>
                 </div>
             </div>
 
@@ -78,22 +76,20 @@
                     </div>
                 </div>
             </div>
-            {% endif %}
+            {% endif %} -->
             <div class="btn-block">
                 {% if existing_posting %}
                 <button type="submit">Update Posting</button>
                 {% else %}
                 <button type="submit">Add Posting</button>
                 {% endif %}
-            </div> -->
+            </div>
     
             <!-- TODO: for now, you can only add skills once the posting was created. Fix this using js -->
             {% if existing_posting %}
             <br>
+            <h2 class="subtitle">Required Skills</h2>
             <table class="table">
-                <caption>
-                    <h2 class="subtitle">Required Skills</h2>
-                </caption>
                 <tbody>
                     <tr></tr>
                     {% for skill in skills %}
@@ -123,7 +119,7 @@
                             </div>
                         </td>
                         <td>
-                            <button class="delete is-medium" onclick="deleteSkill({{ skill[0] }}, {{ job_id }})"></button>
+                            <button type="button" class="delete is-medium" onclick="deleteSkill({{ skill[0] }}, {{ job_id }})"></button>
                         </td>
                     </tr>
                     {% endfor %}

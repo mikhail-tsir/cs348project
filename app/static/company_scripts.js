@@ -46,9 +46,10 @@ function changeProficiency(skillId, proficiency, jobId) {
 function deletePosting(jobId) {
     $.ajax({
         url: `/company/delete_posting/${jobId}`,
-        methos: "DELETE",
+        method: "DELETE",
         success: function () {
             console.log("SUCCESS");
+            window.location = "/company/homepage";
         },
         error: function () {
             alert("Oops, unable to delete posting :(");

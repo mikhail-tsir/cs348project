@@ -5,9 +5,7 @@
     <form method="post" action="{{ url_for('company.about_post') }}">
         <h2 class="info">My Description:</h2>
         <br>
-        <textarea name="description">
-            {{ description }}
-        </textarea>
+        <textarea name="description">{{ description }}</textarea>
         <br>
         <h2 class="info">Website</h2>
         <input type="text" name="website" value="{{ website }}"/>

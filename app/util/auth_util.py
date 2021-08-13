@@ -24,7 +24,7 @@ def create_user_model(user_type: str, attributes: Tuple):
 def generic_login(user_type):
     if not validate_form(request, ["email", "password"]):
         flash("Required form fields must not be empty.")
-        return redirect(".login")
+        return redirect(url_for(".login"))
     
     email, password = request.form.get("email").lower(), request.form.get("password")
 

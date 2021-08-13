@@ -163,7 +163,7 @@
             <a href="{{ url_for('company.view_applicants', job_id=job_id) }}">View Applicants</a>
         </div>
         <div class="card-footer-item">
-            <a href="javascript:deletePosting({{ job_id }});">Delete Posting</a>
+            <a href="javascript:;" onclick="deletePosting({{ job_id }});">Delete Posting</a>
         </div>
     </div>
     {% endif %}

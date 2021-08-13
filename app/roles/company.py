@@ -32,7 +32,7 @@ def jobs(company_id):
     company_name = job_dicts[0]["company"]
 
     if type(current_user.user) == Company:
-        return redirect(url_for("homepage"))
+        return redirect(url_for(".homepage"))
 
     return render_jobseeker_page(
         "job-previews.html", title=company_name, job_previews=job_dicts
@@ -185,7 +185,7 @@ def add_skill(job_id):
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(query, (job_id, skill_id))
         conn.commit()
-        flash("Changes saved")
+        flash("Changes saved", "info")
         return redirect(url_for("company.view_job", job_id=job_id))
 
 
@@ -295,14 +295,22 @@ def view_applicants(job_id):
 @company_login_required
 @authorize_company
 def delete_posting(job_id):
-    query = """DELETE FROM job
+    delete_application_query = """DELETE FROM application
     WHERE job_id = %s;
+    """
+    delete_skill_reqs = """DELETE FROM job_skill_requirements
+    WHERE job_id = %s;
+    """
+    delete_job_query = """DELETE FROM job
+    WHERE id = %s;
     """
 
     with db.connect() as conn, conn.cursor() as cursor:
-        cursor.execute(query, job_id)
+        cursor.execute(delete_application_query, job_id)
+        cursor.execute(delete_skill_reqs, job_id)
+        cursor.execute(delete_job_query, job_id)
         conn.commit()
-        return redirect(url_for("company.homepage"))
+        return Response(status=200)
 
 
 @company.route("/download_resume/<int:jobseeker_id>")

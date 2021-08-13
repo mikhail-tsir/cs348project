@@ -136,6 +136,20 @@ def withdraw(job_id):
         return redirect(url_for("jobseeker.view_job", job_id=job_id))
 
 
+def my_skills(i):
+    query = """SELECT skill.id, skill.sname, job_seeker_skill.proficiency
+    FROM job_seeker_skill
+    INNER JOIN skill
+    ON job_seeker_skill.skill_id = skill.id
+    WHERE job_seeker_skill.job_seeker_id = %s;
+    """
+
+    with db.connect() as conn, conn.cursor() as cursor:
+        cursor.execute(query, (current_user.id))
+        result = cursor.fetchall()
+        current_app.logger.info(str(i) + ": " + str(result))
+
+
 @jobseeker.route("/skills")
 @jobseeker_login_required
 def skills_page():
@@ -179,6 +193,7 @@ def skills_page():
 @jobseeker.route("/delete_skill/<int:skill_id>", methods=["DELETE"])
 @jobseeker_login_required
 def delete_skill(skill_id):
+    my_skills(1)
     query = """DELETE FROM job_seeker_skill
     WHERE skill_id = %s
     AND job_seeker_id = %s;
@@ -187,6 +202,7 @@ def delete_skill(skill_id):
     with db.connect() as conn, conn.cursor() as cursor:
         cursor.execute(query, (skill_id, current_user.id))
         conn.commit()
+        my_skills(2)
         return jsonify(success=True)
 
 
@@ -209,6 +225,7 @@ def change_proficiency(skill_id):
 @jobseeker.route("/add_skill", methods=["POST"])
 @jobseeker_login_required
 def add_skill():
+    my_skills(3)
     try:
         query = """
         INSERT INTO job_seeker_skill (job_seeker_id, skill_id, proficiency)
@@ -222,6 +239,8 @@ def add_skill():
             conn.commit()
     except:
         flash("Oops, there was an error adding your skill. Try again.")
+    
+    my_skills(4)
 
     return redirect(url_for("jobseeker.skills_page"))
 
