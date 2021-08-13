@@ -1,0 +1,36 @@
+{% from "macros.html" import skill_tag %}
+
+{% extends "company-base.html" %}
+
+{% block company_body %}
+
+<div class="content">
+    <h1 class="title">Applicants for <a href="{{ url_for('company.view_job', job_id=job_id) }}" style="color:white;">{{ job_title }}</a></h1>
+    {% for id, applicant in applicants.items() %}
+    <div class="card is-fullwidth">
+        <div class="card-header">
+            <p class="card-header-title">
+                {{ applicant[0] }} {{ applicant[1] }}
+            </p>
+        </div>
+        <div class="card-content">
+            <b>Email:</b> {{ applicant[3] }}
+            <br>
+            <b>Phone:</b> {{ applicant[4] }}
+            <br>
+            <b>
+                <a href="{{ url_for('company.download_resume', jobseeker_id=id) }}">Download Resume</a>
+            </b>
+        </div>
+        <div class="card-footer">
+            <div class="card-footer-item has-text-left">
+                {% for key, value in applicant[2].items() %}
+                {{ skill_tag(key, value) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+{% endblock %}

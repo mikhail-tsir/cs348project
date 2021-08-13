@@ -29,6 +29,7 @@ from app.util.job_util import (
 )
 from app.util.jobseeker_util import get_jobseeker_skills, render_jobseeker_page
 from app.util.company_util import get_company_description
+from app.util.form_util import validate_form
 
 
 jobseeker = Blueprint("jobseeker", __name__)
@@ -62,7 +63,7 @@ def view_job(job_id):
     AND job_id = %s;
     """
 
-    job_data_query = """SELECT jname, company.name, company.id, job.description, apply_deadline
+    job_data_query = """SELECT jname, company.name, company.id, location, job.description, apply_deadline
     FROM job
     INNER JOIN company
     ON job.company_id = company.id
@@ -84,9 +85,9 @@ def view_job(job_id):
             job_title=result[0],
             company_name=result[1],
             company_id=result[2],
-            job_location="Ottawa, ON",  # TODO add location column
-            job_description=result[3],
-            app_deadline=result[4],
+            job_location=result[3],  # TODO add location column
+            job_description=result[4],
+            app_deadline=result[5],
             applied=already_applied,
             skills=skills_dict,
         )
@@ -274,10 +275,17 @@ def download_resume():
 @jobseeker.route("/company/<int:company_id>")
 @jobseeker_login_required
 def company(company_id):
-    name, description = get_company_description(company_id)
+    name, description, website = get_company_description(company_id)
+    has_website = True
+
+    if website is None or len(website) < 8 or website[:4] != "http":
+        has_website = False
+
     return render_jobseeker_page(
         "about-company.html",
         company_name=name,
         description=description,
-        company_id=company_id
+        company_id=company_id,
+        website=website,
+        has_website=has_website
     )

@@ -10,6 +10,11 @@
             <div class="content">
                 {{ description }}
             </div>
+            <p>
+                {% if has_website %}
+                <a href="{{ website }}">{{ website }}</a>
+                {% endif %}
+            </p>
         </div>
     </div>
 </div>

@@ -1,4 +1,4 @@
-{% from "macros.html" import name_input, password_input, email_input, description_input %}
+{% from "macros.html" import name_input, password_input, email_input, description_input, website_input %}
 
 {% extends "signup.html" %}
 
@@ -7,6 +7,7 @@
 {{ email_input() }}
 {{ password_input(confirm=True) }}
 {{ description_input() }}
+{{ website_input() }}
 {% endblock %}
 
 {% block user_type_nice %}Company{% endblock %}

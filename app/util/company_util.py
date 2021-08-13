@@ -4,7 +4,7 @@ from flask_login import current_user
 
 
 def get_company_description(company_id):
-    query = """SELECT name, description
+    query = """SELECT name, description, website
     FROM company
     WHERE id = %s;
     """

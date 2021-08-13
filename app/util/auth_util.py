@@ -1,4 +1,4 @@
-from flask import flash, redirect, request, url_for
+from flask import flash, redirect, request, url_for, Response
 from flask_login import login_user
 from pymysql.err import MySQLError
 from typing import Tuple
@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 from app.models import Account, JobSeeker, Company
+
+from app.util.form_util import validate_form
 
 
 def create_user_model(user_type: str, attributes: Tuple):
@@ -18,6 +20,10 @@ def create_user_model(user_type: str, attributes: Tuple):
 
 
 def generic_login(user_type):
+    if not validate_form(request, ["email", "password"]):
+        flash("Required form fields must not be empty.")
+        return redirect(".login")
+    
     email, password = request.form.get("email"), request.form.get("password")
 
     with db.connect() as conn:
@@ -47,10 +53,14 @@ def generic_login(user_type):
             flash(
                 "Oops, there was an issue processing the login request. Please try again."
             )
-            return redirect(url_for(f".login"))
+            return redirect(url_for(".login"))
 
 
 def insert_new_user(user_type, cursor):
+    if not validate_form(request, ["email", "password"]):
+        flash("Required form fields must not be empty.")
+        return redirect(url_for(".signup"))
+        
     hashed_pw = generate_password_hash(request.form.get("password"))
 
     # insert account info first
@@ -76,6 +86,10 @@ def insert_new_user(user_type, cursor):
 
     # for jobseeker accounts
     if user_type == "jobseeker":
+        if not validate_form(request, ["fname", "lname", "phone"]):
+            flash("Required form fields must not be empty.")
+            return redirect(url_for(".signup"))
+
         cursor.execute(
             """
             INSERT INTO job_seeker (fname, lname, phone, id)
@@ -91,16 +105,23 @@ def insert_new_user(user_type, cursor):
         return
 
     # for company accounts
+    if not validate_form(request, ["name", "description", "website"]):
+        flash("Required form fields must not be empty.")
+        return Response(status=204)
     cursor.execute(
         """
-        INSERT INTO company (name, description, id)
+        INSERT INTO company (name, description, website, id)
         VALUES (%s, %s, %s);
         """,
-        (request.form["name"], request.form["description"], account_id),
+        (request.form["name"], request.form["description"], request.form["website"], account_id),
     )
 
 
 def generic_signup(user_type):
+    if not validate_form(request, ["password", "confirm_password", "email"]):
+        flash("Required form fields must not be empty.")
+        return redirect(url_for(".signup"))
+
     password, confirm_password = (
         request.form.get("password"),
         request.form.get("confirm_password"),

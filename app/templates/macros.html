@@ -82,21 +82,29 @@
 </div>
 {%- endmacro %}
 
+{% macro website_input() %}
+<div class="contact-item">
+    <div class="item">
+        <p>
+            <b>Website<span class="required">*</span></b>
+        </p>
+        <input type="text" placeholder="http://www.example.com" name="website" />
+    </div>
+</div>
+{%- endmacro %}
 
 {% macro flashing() %}
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-{% for category, message in messages %}
-{% if category == "info" %}
+{% if messages[-1][0] == "info" %}
 <div class="notification is-info">
-    {{ message }}
+    {{ messages[-1][1] }}
 </div>
 {% else %}
 <div class="notification is-danger">
-    {{ message }}
+    {{ messages[-1][1] }}
 </div>
 {% endif %}
-{% endfor %}
 {% endif %}
 {% endwith %}
 {%- endmacro %}
@@ -134,7 +142,7 @@
     </div>
     {% if not is_owner %}
     <div class="card-content">
-        <pgmail>
+        <p>
             <a href="{{ url_for('jobseeker.company', company_id=company_id) }}">{{ company }}</a> - {{ location }}
         </p>
     </div>
@@ -149,5 +157,15 @@
             {% endfor %}
         </div>
     </div>
+    {% if is_owner %}
+    <div class="card-footer">
+        <div class="card-footer-item">
+            <a href="{{ url_for('company.view_applicants', job_id=job_id) }}">View Applicants</a>
+        </div>
+        <div class="card-footer-item">
+            <a href="javascript:deletePosting({{ job_id }});">Delete Posting</a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {%- endmacro %}

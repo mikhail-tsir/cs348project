@@ -25,9 +25,9 @@ def display_job_dicts(data, cursor):
             {
                 "id": job_id,
                 "title": row[1],
-                "company": row[3],
-                "company_id": row[4],
-                "location": "Ottawa, ON",
+                "company": row[4],
+                "company_id": row[5],
+                "location": row[3],
                 "description": row[2],
                 "min_skill_proficiencies": skills_dict,
             }
@@ -38,7 +38,7 @@ def display_job_dicts(data, cursor):
 
 def get_recommended_jobs():
     # TODO get rid of limit and paginate results
-    query = """SELECT temp.id, temp.jname, temp.description, company.name, company.id, temp.score
+    query = """SELECT temp.id, temp.jname, temp.description, temp.location, company.name, company.id, temp.score
     FROM (
         SELECT job.*, relevance.score
         FROM relevance
@@ -58,7 +58,7 @@ def get_recommended_jobs():
 
 
 def get_applications():
-    query = """SELECT job.id, job.jname, job.description, company.name, company.id
+    query = """SELECT job.id, job.jname, job.description, job.location, company.name, company.id
     FROM job
     INNER JOIN application
     ON job.id = application.job_id
@@ -74,7 +74,7 @@ def get_applications():
 
 def get_jobs_by_company(company_id):
     # TODO get rid of limit and paginate results
-    query = """SELECT job.id, job.jname, job.description, company.name, company.id
+    query = """SELECT job.id, job.jname, job.description, job.location, company.name, company.id
     FROM job
     INNER JOIN company
     ON job.company_id = company.id
